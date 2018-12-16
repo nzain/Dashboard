@@ -1,0 +1,107 @@
+
+/* TEST AREA */
+* {
+    box-sizing: border-box;
+}
+.header {
+    height: 90px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    background: #00000030;
+    box-shadow: 5px 5px 5px #00000015;
+}
+.date {
+    float: left;
+    width: 75%;
+    font-size: 4em; /* 48px/16=3em */
+}
+.time {
+    float: left;
+    width: 20%;
+    text-align: right;
+    font-size: 4em;
+}
+.seconds {
+    float: left;
+    width: 5%;
+    margin-top: 46px;
+    padding-left: 5px;
+    color: lightgray;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+[class*="col-"] {
+    float: left;
+    padding: 15px;
+    border-radius: 20px;
+    background: #00000030;
+    box-shadow: 5px 5px 5px #00000015;
+}
+
+/* 0-22 2+2 27-48 2+2 52-74 2% 78-100 */
+.pad-col{
+    float: left;
+    width: 4%; 
+    padding:15px; /*otherwise invisible*/
+    /*background: red*/
+}
+.col-1 {width: 22%;}
+.col-2 {width: 48%;}
+.col-3 {width: 74%;}
+.col-4 {width: 100%;}
+/* END TEST AREA */
+
+
+
+
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification 
+for details on configuring this project to bundle and minify static web assets. */
+    /*background-image: url("~/images/IMG_20180813_100709709.jpg");*/
+body {
+    margin: 0px;
+    background-image: url("../api/images/background");
+    background-size: cover;
+    color: whitesmoke;
+}
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}
+
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}

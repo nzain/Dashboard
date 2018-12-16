@@ -1,0 +1,57 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<div class="header">
+    <div id="date" class="date"></div>
+    <div id="time" class="time"></div>
+    <div id="seconds" class="seconds"></div>
+</div>
+
+
+<!-- CALENDAR - PATRICK -->
+<div class="col-1">
+    <h3>Patrick</h3>
+    <p>Lorem ipsum dolor..</p>
+    <p>Ut enim ad..</p>
+</div>
+<div class="pad-col"></div>
+
+<!-- CALENDAR - STEFFI -->
+<div class="col-1">
+    <h3>Steffi</h3>
+    <p>Lorem ipsum dolor..</p>
+    <p>Ut enim ad..</p>
+</div>
+<div class="pad-col"></div>
+
+<!-- CALENDAR - EMILY -->
+<div class="col-1">
+    <h3>Emily</h3>
+    <p>Lorem ipsum dolor..</p>
+    <p>Ut enim ad..</p>
+</div>
+<div class="pad-col"></div>
+
+<!-- WETTER -->
+<div class="col-1">
+    <h3>Wetter</h3>
+    <p>Lorem ipsum dolor..</p>
+    <p>Ut enim ad..</p>
+</div>
+
+
+<!-- <img src="images/banner1.svg" alt="text alternative"/> -->
+
+<script>
+    updateDateTime();
+    function updateDateTime() {
+        var now = new Date();
+        document.getElementById("date").innerHTML    = now.toLocaleDateString("de-DE", {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+        document.getElementById("time").innerHTML    = now.toLocaleTimeString("de-DE", {hour:'2-digit', minute:'2-digit'});
+        var seconds = now.getSeconds();
+        document.getElementById("seconds").innerHTML = (seconds<10?'0':'')+seconds;
+    }
+    setInterval(updateDateTime, 1000);
+</script>
