@@ -9,38 +9,14 @@
     <div id="seconds" class="seconds"></div>
 </div>
 
-
-<!-- CALENDAR - PATRICK -->
-<div class="col-1">
-    <h3>Patrick</h3>
-    <p>Lorem ipsum dolor..</p>
-    <p>Ut enim ad..</p>
-</div>
-<div class="pad-col"></div>
-
-<!-- CALENDAR - STEFFI -->
-<div class="col-1">
-    <h3>Steffi</h3>
-    <p>Lorem ipsum dolor..</p>
-    <p>Ut enim ad..</p>
-</div>
-<div class="pad-col"></div>
-
-<!-- CALENDAR - EMILY -->
-<div class="col-1">
-    <h3>Emily</h3>
-    <p>Lorem ipsum dolor..</p>
-    <p>Ut enim ad..</p>
-</div>
-<div class="pad-col"></div>
-
-<!-- WETTER -->
-<div class="col-1">
-    <h3>Wetter</h3>
-    <p>Lorem ipsum dolor..</p>
-    <p>Ut enim ad..</p>
-</div>
-
+@foreach (var day in Model.NextDays) {
+    <div class="dayRow">
+        <h2>@day.DisplayDate</h2>
+        <p>Todo: hier ist was los</p>
+        <p>und das auch noch</p>
+        <p>und noch viel mehr</p>
+    </div>
+} 
 
 <!-- <img src="images/banner1.svg" alt="text alternative"/> -->
 
