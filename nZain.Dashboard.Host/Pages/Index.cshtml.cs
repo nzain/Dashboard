@@ -11,17 +11,22 @@ namespace nZain.Dashboard.Host.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly CalendarService _calendarService;
+        private readonly GoogleCalendarService _calendarService;
 
-        public IndexModel(CalendarService calendarService)
+        public IndexModel(GoogleCalendarService calendarService)
         {
             this._calendarService = calendarService;
             this.NextDays = new CalendarDay[0];
         }
 
-        public void OnGet()
+        // public void OnGet()
+        // {
+        //     this.NextDays = this._calendarService.EnumerateDays(5).ToArray();
+        // }
+
+        public async Task OnGetAsync()
         {
-            this.NextDays = this._calendarService.EnumerateDays(5).ToArray();
+            this.NextDays = await this._calendarService.GetDataAsync(5);
         }
 
         public CalendarDay[] NextDays { get; private set; }

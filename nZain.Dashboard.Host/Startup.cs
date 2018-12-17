@@ -25,9 +25,11 @@ namespace nZain.Dashboard.Host
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();//.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSingleton<CalendarService, CalendarService>();
+            services.AddSingleton(Program.GoogleService); // google calendar API
+            services.AddSingleton(Program.CalendarListService); // list of my CalendarIds loaded from a file
+            services.AddSingleton<GoogleCalendarService, GoogleCalendarService>(); // the final wrapper
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

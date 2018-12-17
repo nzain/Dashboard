@@ -11,10 +11,19 @@
 
 @foreach (var day in Model.NextDays) {
     <div class="dayRow">
-        <h2>@day.DisplayDate</h2>
-        <p>Todo: hier ist was los</p>
-        <p>und das auch noch</p>
-        <p>und noch viel mehr</p>
+        @if (day.Events.Length == 0)
+        {
+            <h2>@day.DisplayDate - Keine Termine!</h2>
+        }
+        else 
+        {
+            <h2>@day.DisplayDate</h2>
+            @foreach (var ev in day.Events)
+            {
+                <h3>@ev</h3>
+                <p>TODO Location, all day events, event color</p>
+            }
+        }
     </div>
 } 
 
