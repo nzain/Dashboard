@@ -30,6 +30,8 @@ namespace nZain.Dashboard.Host
             services.AddSingleton(Program.GoogleService); // google calendar API
             services.AddSingleton(Program.CalendarListService); // list of my CalendarIds loaded from a file
             services.AddSingleton<GoogleCalendarService, GoogleCalendarService>(); // the final wrapper
+
+            services.AddSingleton<WeatherService, WeatherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

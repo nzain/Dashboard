@@ -15,9 +15,9 @@ namespace nZain.Dashboard.Services
 {
     public class GoogleCalendarService
     {
-        private const string CredentialsFile = "GoogleAuth/credentials.json";
+        private const string CredentialsFile = "Secrets/credentials.json";
 
-        private const string TokenPath = "GoogleAuth/token.json";
+        private const string TokenPath = "Secrets/token.json";
 
         private const string ApplicationName = "nzain-dashboard";
 

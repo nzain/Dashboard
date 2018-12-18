@@ -17,7 +17,7 @@ namespace nZain.Dashboard.Services
     {
         // File format: "CalendarId;YourNameForIt"
         // Want to know, which calendarIds you have? Use the static method QueryCalendarIdsAsync below!
-        private const string FileName = "GoogleAuth/calendars.csv";
+        private const string FileName = "Secrets/calendars.csv";
 
         #region Static Factory and Helper Method
 

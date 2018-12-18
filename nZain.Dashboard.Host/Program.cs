@@ -18,6 +18,12 @@ namespace nZain.Dashboard.Host
     {
         public static async Task Main(string[] args)
         {
+            var service = new WeatherService();
+            var forecast = await service.GetForecastAsync();
+            System.Console.WriteLine(forecast);
+
+
+
             // this one is complex, async, and long. We can't properly call this during ConfigureServices...
             GoogleService = await GoogleCalendarService.GoogleCalendarAuthAsync();
 
