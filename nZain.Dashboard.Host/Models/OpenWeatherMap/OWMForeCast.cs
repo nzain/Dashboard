@@ -156,7 +156,7 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
     {
         /// <Summary>Weather condition id</Summary>
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         /// <Summary>Group of weather parameters (Rain, Snow, Extreme etc.)</Summary>
         [JsonProperty("main")]
@@ -171,6 +171,31 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
         public string Icon { get; set; }
 
         public string IconUri => $"http://openweathermap.org/img/w/{this.Icon}.png";
+
+        public int GetSortKey()
+        {
+            if (this.Id >= 900) // UNDEFINED
+                return this.Id;
+            if (this.Id == 800) // clear sky, best :)
+                return 0;
+            if (this.Id >= 800) // clear sky or clouds only
+                return 1;
+            if (this.Id >= 700) // Atmosphere (mist/fog)
+                return 2;
+            if (this.Id >= 600) // snow
+                return 5;
+            if (this.Id >= 500) // rain
+                return 4;
+            if (this.Id >= 400) // UNDEFINED
+                return this.Id;
+            if (this.Id >= 300) // drizzle
+                return 3;
+            if (this.Id >= 200) // thunderstorm
+                return 6;
+            if (this.Id >= 100) // UNDEFINED
+                return this.Id;
+            return this.Id; // UNDEFINED, not set, whatever
+        }
 
         public override string ToString()
         {

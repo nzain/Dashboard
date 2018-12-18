@@ -1,13 +1,9 @@
-/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification 
-for details on configuring this project to bundle and minify static web assets. */
 body {
     margin: 0px;
     background-image: url("../api/images/background");
     background-size: cover;
     color: whitesmoke;
 }
-
-/* Wrapping element: Set some basic padding to keep content from hitting the edges */
 .body-content {
     padding-top: 50px;
     padding-bottom: 50px;
@@ -15,96 +11,49 @@ body {
     padding-right: 10px;
 }
 
-* {
-    box-sizing: border-box;
+/*** BootStrap/FlexBox Grid Style ***/
+.row {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 20px;
+    background: #00000050;
+    box-shadow: 5px 5px 5px #00000035;
 }
 .header {
-    height: 90px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 20px;
-    border-radius: 20px;
-    margin-bottom: 20px;
-    background: #00000030;
-    box-shadow: 5px 5px 5px #00000015;
+    background: #00000060;
+    box-shadow: 5px 5px 5px #00000035;
 }
+
+/*** Date/Time Header Stuff ***/
 .date {
-    float: left;
-    width: 75%;
     font-size: 4em;
 }
 .time {
-    float: left;
-    width: 20%;
-    text-align: right;
     font-size: 4em;
 }
 .seconds {
-    float: left;
-    width: 5%;
     margin-top: 46px;
-    padding-left: 5px;
     color: lightgray;
 }
 
-.dayRow {
-    margin-bottom: 15px;
-    padding: 15px;
-    border-radius: 20px;
-    background: #00000030;
-    box-shadow: 5px 5px 5px #00000015;
+/*** Weather Style ***/
+.weatherDay {
+    font-size: 1.5em
 }
-
-.row::after {
-  content: "";
-  clear: both;
-  display: table;
+.weatherDayTemp {
+    width: 200px;
+    display: inline-block;
+    font-size: 2em;
 }
-[class*="col-"] {
-    float: left;
-    padding: 15px;
-    border-radius: 20px;
-    background: #00000030;
-    box-shadow: 5px 5px 5px #00000015;
+.weatherNight {
+    color: lightgray;
+    font-size: 1.25em
 }
-
-/* 0-22 2+2 27-48 2+2 52-74 2% 78-100 */
-.pad-col{
-    float: left;
-    width: 4%; 
-    padding:15px; /*otherwise invisible*/
-    /*background: red*/
+.weatherNightTemp {
+    width: 200px;
+    display: inline-block;
+    font-size: 1.5em;
 }
-.col-1 {width: 22%;}
-.col-2 {width: 48%;}
-.col-3 {width: 74%;}
-.col-4 {width: 100%;}
-
-
-
-
-
-
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
-}
-
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
-}
-
-/* QR code generator */
-#qrCode {
-    margin: 15px;
-}
-
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
+.weatherIcon {
+    display: inline-block;
 }

@@ -9,6 +9,8 @@ namespace nZain.Dashboard.Models
 {
     public class WeatherForecast
     {
+        private static readonly TimeSpan OneDay = TimeSpan.FromDays(1);
+
         public WeatherForecast(OWMForeCast owm)
         {
             if (owm.List == null)
@@ -24,7 +26,15 @@ namespace nZain.Dashboard.Models
 
         private static DateTimeOffset DateSelector(ForeCastItem item)
         {
+            //   day weather: (6am - 18pm]
+            // night weather: (18pm - 6am *next day*]
             var s = item.DateTime;
+            if (s.Hour <= WeatherForecastDay.DayTimeBeginHour)
+            {
+                // counts as "night weather" of the previous day
+                s = s.Subtract(OneDay);
+            }
+            // group by yyyy-MM-dd only
             return new DateTimeOffset(s.Year, s.Month, s.Day, 0, 0, 0, s.Offset);
         }
 

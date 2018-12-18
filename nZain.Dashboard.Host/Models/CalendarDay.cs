@@ -16,13 +16,19 @@ namespace nZain.Dashboard.Models
         {
             this.Date = date;
             this.Events = events ?? new CalendarEvent[0];
-            TimeSpan delta = date - DateTimeOffset.Now;
-            int deltaDays = (int)Math.Round(delta.TotalDays);
-            switch(deltaDays)
+            
+            var now = DateTimeOffset.Now;
+            if (date.Day == now.Day)
             {
-                case 0: this.DisplayDate = "Heute"; break;
-                case 1: this.DisplayDate = "Morgen"; break;
-                default: this.DisplayDate = date.ToString("d. MMMM"); break;
+                this.DisplayDate = "Heute";
+            }
+            else if (date.Day == now.AddDays(1).Day)
+            {
+                this.DisplayDate = "Morgen";
+            }
+            else
+            {
+                this.DisplayDate = date.ToString("d. MMMM");
             }
         }
 
@@ -36,9 +42,9 @@ namespace nZain.Dashboard.Models
 
         public void SetWeather(WeatherForecast fc)
         {
-            this.Weather = fc.Days.FirstOrDefault(f => f.Day.Year == this.Date.Year 
-                                                    && f.Day.Month == this.Date.Month 
-                                                    && f.Day.Day == this.Date.Day);
+            this.Weather = fc.Days.FirstOrDefault(f => f.Date.Year  == this.Date.Year 
+                                                    && f.Date.Month == this.Date.Month 
+                                                    && f.Date.Day   == this.Date.Day);
         }
 
         public override string ToString()
