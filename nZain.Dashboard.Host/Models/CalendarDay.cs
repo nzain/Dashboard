@@ -32,6 +32,15 @@ namespace nZain.Dashboard.Models
 
         public CalendarEvent[] Events { get; }
 
+        public WeatherForecastDay Weather { get; private set; }
+
+        public void SetWeather(WeatherForecast fc)
+        {
+            this.Weather = fc.Days.FirstOrDefault(f => f.Day.Year == this.Date.Year 
+                                                    && f.Day.Month == this.Date.Month 
+                                                    && f.Day.Day == this.Date.Day);
+        }
+
         public override string ToString()
         {
             return this.Date.ToString();

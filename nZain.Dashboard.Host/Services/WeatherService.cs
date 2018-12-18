@@ -57,14 +57,20 @@ namespace nZain.Dashboard.Services
             }
         }
 
-        public async Task<ForeCast> GetForecastAsync()
+        public async Task<WeatherForecast> GetForecastAsync()
+        {
+            OWMForeCast fc = await this.GetOpenWeatherMapForecastAsync();
+            return new WeatherForecast(fc);
+        }
+
+        internal async Task<OWMForeCast> GetOpenWeatherMapForecastAsync()
         {
             using (var client = this.CreateClient())
             {
                 string requestUri = this.BuildRequestUri("/data/2.5/forecast/");
                 HttpResponseMessage response = await client.GetAsync(requestUri);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsAsync<ForeCast>();
+                return await response.Content.ReadAsAsync<OWMForeCast>();
             }
         }
 

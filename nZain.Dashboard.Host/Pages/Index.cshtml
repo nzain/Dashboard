@@ -21,8 +21,12 @@
             @foreach (var ev in day.Events)
             {
                 <h3>@ev</h3>
-                <p>TODO Location, all day events, event color</p>
             }
+        }
+        @if (day.Weather != null)
+        {
+            <p>@day.Weather.ConditionsString, Min @day.Weather.TempMin °C, Max @day.Weather.TempMax °C</p>
+            <img src=@day.Weather.IconUri />
         }
     </div>
 } 
