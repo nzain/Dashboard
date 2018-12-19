@@ -172,6 +172,8 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
 
         public string IconUri => $"http://openweathermap.org/img/w/{this.Icon}.png";
 
+        public bool IsSnow() => 600 <= this.Id && this.Id < 700;
+        
         public int GetSortKey()
         {
             if (this.Id >= 900) // UNDEFINED

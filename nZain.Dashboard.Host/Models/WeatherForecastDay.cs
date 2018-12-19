@@ -15,6 +15,11 @@ namespace nZain.Dashboard.Models
         public WeatherForecastDay(DateTimeOffset date, ForeCastItem[] items)
         {
             this.Date = date;
+            var today = DateTimeOffset.Now;
+            this.IsToday = date.Year  == today.Year
+                        && date.Month == today.Month
+                        && date.Day   == today.Day;
+
             this.TempMin = +100;
             this.TempMax = -100;
             if (items == null || items.Length == 0)
@@ -46,23 +51,44 @@ namespace nZain.Dashboard.Models
                 }
             }
 
-            Weather day = GetWorstWeather(weatherDay);
-            this.DayDescription = day?.Description;
-            this.DayIconUri = day?.IconUri;
             this.DayRain = TotalRain(weatherDay);
             this.DaySnow = TotalSnow(weatherDay);
-
-            Weather night = GetWorstWeather(weatherNight);
-            this.NightDescription = night?.Description;
-            this.NightIconUri = night?.IconUri;
+            Weather day = GetWorstWeather(weatherDay);
+            if (day != null)
+            {
+                this.DayIconUri = day.IconUri;
+                this.DayDescription = day.Description;
+                int volume = this.DayRain + this.DaySnow;
+                if (volume > 0)
+                {
+                    this.DayDescription += day.IsSnow()
+                        ? $" {volume}mm" // Schnee 4mm
+                        : $" {volume}L"; // Leichter Regen 3L
+                }
+            }
+            
             this.NightRain = TotalRain(weatherNight);
             this.NightSnow = TotalSnow(weatherNight);
+            Weather night = GetWorstWeather(weatherNight);
+            if (night != null)
+            {
+                this.NightIconUri = night.IconUri;
+                this.NightDescription = night.Description;
+                int volume = this.NightRain + this.NightSnow;
+                if (volume > 0)
+                {
+                    this.NightDescription += night.IsSnow()
+                        ? $" {volume}mm" // Schnee 4mm
+                        : $" {volume}L"; // Leichter Regen 3L
+                }
+            }
         }        
 
         public DateTimeOffset Date { get; }
+        
+        public bool IsToday { get; }
 
         public int TempMax { get; }
-
         public int TempMin { get; }
 
         public int Humidity { get; }

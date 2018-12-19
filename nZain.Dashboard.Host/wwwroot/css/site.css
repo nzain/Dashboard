@@ -1,26 +1,23 @@
-body {
+body { /* 16:9 max resolution is 1366x768 */
     margin: 0px;
+    padding: 20px;
+    color: whitesmoke;
     background-image: url("../api/images/background");
     background-size: cover;
-    color: whitesmoke;
+    overflow: hidden; /* we cannot scroll anyways :) */
 }
-.body-content {
-    padding-top: 50px;
-    padding-bottom: 50px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
+.inline {display: inline-block;}
 
 /*** BootStrap/FlexBox Grid Style ***/
 .row {
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 20px;
-    background: #00000050;
+    background: #00000060;
     box-shadow: 5px 5px 5px #00000035;
 }
 .header {
-    background: #00000060;
+    background: #00000070;
     box-shadow: 5px 5px 5px #00000035;
 }
 
@@ -29,31 +26,58 @@ body {
     font-size: 4em;
 }
 .time {
+    display: inline;
     font-size: 4em;
 }
 .seconds {
-    margin-top: 46px;
-    color: lightgray;
+    display: inline;
+    color: gray;
+}
+
+/*** Event Style ***/
+.day-header {
+    font-size: 2em;
+    color: darkgray;
+}
+.event {
+    font-size: 1.5em;
+    display: block;
+}
+.event-time {
+    display: inline;
+    color: darkgray;
+    margin-right: 10px;
+}
+.event-description {
+    display: inline;
+}
+.event-location {
+    display: block;
+    padding-left: 40px;
+    color: darkgray;
 }
 
 /*** Weather Style ***/
-.weatherDay {
-    font-size: 1.5em
+.weatherIcon {
+    float: right;
 }
 .weatherDayTemp {
-    width: 200px;
-    display: inline-block;
+    float: right;
+    padding-right: 15px;
     font-size: 2em;
 }
-.weatherNight {
-    color: lightgray;
-    font-size: 1.25em
-}
 .weatherNightTemp {
-    width: 200px;
-    display: inline-block;
-    font-size: 1.5em;
+    float: right;
+    padding-right: 15px;
+    color: darkgray;
+    font-size: 2em;
 }
-.weatherIcon {
-    display: inline-block;
+.weatherDay {
+    float: right;
+    font-size: 1.2em;
+}
+.weatherNight {
+    float: right;
+    color: darkgray;
+    font-size: 1.2em;
 }

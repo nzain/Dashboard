@@ -18,6 +18,8 @@ namespace nZain.Dashboard.Models
             this.IsAllDay = allDay;
             this.IsMultiDay = this.StartTime.Day != this.EndTime.Day;
             this.Summary = ev.Summary;
+            this.Location = ev.Location;
+            this.DisplayTime = allDay? null : this.StartTime.ToString("HH:mm");
         }
 
         private static DateTimeOffset Convert(EventDateTime edt, out bool allDay)
@@ -50,7 +52,11 @@ namespace nZain.Dashboard.Models
 
         public bool IsMultiDay { get; }
 
+        public string DisplayTime { get; }
+
         public string Summary { get; }
+
+        public string Location { get; }
 
         public bool IsActiveAt(DateTimeOffset d)
         {

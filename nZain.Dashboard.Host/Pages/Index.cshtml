@@ -3,80 +3,81 @@
 @{
     ViewData["Title"] = "Dashboard";
 }
-<div class="container">
+<div class="container-fluid">
+
     <!-- Header: date, time -->
     <div class="header row">
-        <div class="col-sm-9 date" id="date"></div>
-        <div class="col-sm-2 time" id="time"></div>
-        <div class="col-sm-1 seconds" id="seconds"></div>
+        <div class="col-lg-10 date" id="date"></div>
+        <div class="col-lg-2">
+            <div class="time" id="time"></div>
+            <div class="seconds" id="seconds"></div>
+        </div>
     </div>
 
-@foreach (var item in Model.NextDays) {
+    @foreach (var item in Model.NextDays)
+    {
     <div class="row">
         <!-- Day-Header + Events Colum -->
-        <div class="col-sm-9">
-            <h2>@item.DisplayDate</h2>
+        <div class="col-lg-10">
             @if (item.Events.Length == 0)
             {
-                <h3>Keine Termine</h3>
+            <div class="day-header">@item.DisplayDate - keine Termine</div>
             }
             else 
             {
-                @foreach (var ev in item.Events)
+            <div class="day-header">@item.DisplayDate</div>
+            @foreach (var ev in item.Events)
+            {    
+            <div class="event">
+                @if (!string.IsNullOrWhiteSpace(ev.DisplayTime))
                 {
-                    <h3>@ev</h3>
+                <div class="event-time">@ev.DisplayTime</div>
                 }
+                <div class="event-description">@ev.Summary</div>
+            </div>
+            }
             }
         </div>
 
         <!-- Weather Colum -->
-        <div class="col-sm-3">
+        <div class="col-lg-2">
             @if (item.Weather != null)
             {
-                @if (item.Weather.DayDescription != null)
-                {
-                    <div class="weatherDayTemp">@(item.Weather.TempMax)°C (max)</div>
-                    <div class="weatherIcon"><img src=@item.Weather.DayIconUri /></div>
-                    <div class="weatherDay">@(item.Weather.NightDescription)</div>
-                    @if (item.Weather.DayRain > 0)
-                    {
-                        <div class="weatherDay">Regen @(item.Weather.DayRain)mm</div>
-                    }
-                    @if (item.Weather.DaySnow > 0)
-                    {
-                        <div class="weatherDay">Schnee @(item.Weather.DaySnow)mm</div>
-                    }
-                }
-                @if (item.Weather.NightDescription != null)
-                {
-                    <div class="weatherNightTemp weatherNight">@(item.Weather.TempMin)°C (min)</div>
-                    <div class="weatherIcon"><img src=@item.Weather.NightIconUri /></div>
-                    <div class="weatherNight">@(item.Weather.NightDescription)</div>
-                    @if (item.Weather.NightRain > 0)
-                    {
-                        <div class="weatherNight">Regen @(item.Weather.NightRain)mm</div>
-                    }
-                    @if (item.Weather.NightSnow > 0)
-                    {
-                        <div class="weatherNight">Schnee @(item.Weather.NightSnow)mm</div>
-                    }
-                }
+            @if (item.Weather.DayDescription != null)
+            {
+            <img class="weatherIcon" src=@item.Weather.DayIconUri />
+            <div class="weatherDayTemp">@(item.Weather.TempMax)°C</div>
+            <br style="clear:both" />
+            @if (item.Weather.IsToday)
+            {
+            <p><div class="weatherDay">@(item.Weather.DayDescription)</div></p>
+            <br style="clear:both" />
+            }
+            }
+            @if (item.Weather.NightDescription != null)
+            { 
+            <img class="weatherIcon" src=@item.Weather.NightIconUri />
+            <div class="weatherNightTemp">@(item.Weather.TempMin)°C</div>
+            <br style="clear:both" />
+            @if (item.Weather.IsToday)
+            {
+            <div class="weatherNight">@(item.Weather.NightDescription)</div>
+            }
+            }
             }
         </div>
     </div><!-- end of row -->
 }
-</div>
-
-<!-- <img src="images/banner1.svg" alt="text alternative"/> -->
 
 <script>
     updateDateTime();
     function updateDateTime() {
         var now = new Date();
-        document.getElementById("date").innerHTML    = now.toLocaleDateString("de-DE", {weekitem:'long', year:'numeric', month:'long', item:'numeric'});
+        document.getElementById("date").innerHTML    = now.toLocaleDateString("de-DE", {weekitem:'long', year:'numeric', month:'long', day:'numeric'});
         document.getElementById("time").innerHTML    = now.toLocaleTimeString("de-DE", {hour:'2-digit', minute:'2-digit'});
         var seconds = now.getSeconds();
         document.getElementById("seconds").innerHTML = (seconds<10?'0':'')+seconds;
     }
     setInterval(updateDateTime, 1000);
 </script>
+</div><!-- end Container Body-Content -->
