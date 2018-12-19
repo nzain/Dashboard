@@ -21,17 +21,17 @@ namespace nZain.Dashboard.Host
             this._env = env;
         }
 
-        [HttpGet("Background")]
-        public IActionResult GetBackground()
-        {
-            var dir = Path.Combine(this._env.WebRootPath, "images");
-            DirectoryInfo info = new DirectoryInfo(dir);
-            FileInfo imgFile = info.EnumerateFiles("*.jpg").FirstOrDefault();
-            if (imgFile == null)
-            {
-                return this.NotFound();
-            }
-            return base.File($"images/{imgFile.Name}", "image/jpeg");  
-        }
+        // [HttpGet("Background")]
+        // public IActionResult GetBackground()
+        // {
+        //     var dir = Path.Combine(this._env.WebRootPath, "images");
+        //     DirectoryInfo info = new DirectoryInfo(dir);
+        //     FileInfo imgFile = info.EnumerateFiles("*.jpg").FirstOrDefault();
+        //     if (imgFile == null)
+        //     {
+        //         return this.NotFound();
+        //     }
+        //     return base.File($"images/{imgFile.Name}", "image/jpeg");  
+        // }
     }
 }

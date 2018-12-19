@@ -39,8 +39,8 @@ namespace nZain.Dashboard.Host
         internal static CalendarListService CalendarListService { get; private set; }
 
         public static string WebRoot => RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
-            ? "/home/pi/webapp/wwwroot/"
-            : "./wwwroot";
+            ? "/home/pi/webapp/wwwroot/" // not sure why we need this on linux.. ?
+            : "./wwwroot/";
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)

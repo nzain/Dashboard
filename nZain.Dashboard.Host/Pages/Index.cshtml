@@ -45,27 +45,58 @@
             {
             @if (item.Weather.DayDescription != null)
             {
-            <img class="weatherIcon" src=@item.Weather.DayIconUri />
-            <div class="weatherDayTemp">@(item.Weather.TempMax)°C</div>
-            <br style="clear:both" />
             @if (item.Weather.IsToday)
             {
-            <p><div class="weatherDay">@(item.Weather.DayDescription)</div></p>
-            <br style="clear:both" />
+                <img class="weatherIcon" src=@item.Weather.DayIconUri width="64" />
+                <div class="weatherDayTemp">@(item.Weather.TempMax)°C</div>
+                <br style="clear:both" />
+                <p><div class="weatherDay">@(item.Weather.DayDescription)</div></p>
             }
+            else
+            {
+                <img class="weatherIcon" src=@item.Weather.DayIconUri width="48" />
+                <div class="weatherDayTemp">@(item.Weather.TempMax)°C</div>
+            }
+            <br style="clear:both; margin:5px" />
             }
             @if (item.Weather.NightDescription != null)
             { 
-            <img class="weatherIcon" src=@item.Weather.NightIconUri />
-            <div class="weatherNightTemp">@(item.Weather.TempMin)°C</div>
-            <br style="clear:both" />
             @if (item.Weather.IsToday)
             {
-            <div class="weatherNight">@(item.Weather.NightDescription)</div>
+                <img class="weatherIcon" src=@item.Weather.NightIconUri width="64" />
+                <div class="weatherNightTemp">@(item.Weather.TempMin)°C</div>
+                <br style="clear:both" />
+                <div class="weatherNight">@(item.Weather.NightDescription)</div>
+            }
+            else
+            {
+                <img class="weatherIcon" src=@item.Weather.NightIconUri width="48" />
+                <div class="weatherNightTemp">@(item.Weather.TempMin)°C</div>
             }
             }
             }
         </div>
+
+        <!-- <img class="weatherIcon" src="images/50n.png" width="48" />
+        <img class="weatherIcon" src="images/13n.png" width="48" />
+        <img class="weatherIcon" src="images/11n.png" width="48" />
+        <img class="weatherIcon" src="images/10n.png" width="48" />
+        <img class="weatherIcon" src="images/09n.png" width="48" />
+        <img class="weatherIcon" src="images/04n.png" width="48" />
+        <img class="weatherIcon" src="images/03n.png" width="48" />
+        <img class="weatherIcon" src="images/02n.png" width="48" />
+        <img class="weatherIcon" src="images/01n.png" width="48" />
+
+        <img class="weatherIcon" src="images/50d.png" width="48" />
+        <img class="weatherIcon" src="images/13d.png" width="48" />
+        <img class="weatherIcon" src="images/11d.png" width="48" />
+        <img class="weatherIcon" src="images/10d.png" width="48" />
+        <img class="weatherIcon" src="images/09d.png" width="48" />
+        <img class="weatherIcon" src="images/04d.png" width="48" />
+        <img class="weatherIcon" src="images/03d.png" width="48" />
+        <img class="weatherIcon" src="images/02d.png" width="48" />
+        <img class="weatherIcon" src="images/01d.png" width="48" /> -->
+
     </div><!-- end of row -->
 }
 

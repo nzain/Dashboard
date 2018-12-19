@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Google.Apis.Calendar.v3.Data;
+using nZain.Dashboard.Host;
 using nZain.Dashboard.Models.OpenWeatherMap;
 
 namespace nZain.Dashboard.Models
@@ -82,6 +84,9 @@ namespace nZain.Dashboard.Models
                         : $" {volume}L"; // Leichter Regen 3L
                 }
             }
+
+            if (TryGetIconUri(day, true, out string uri)) this.DayIconUri = uri;
+            if (TryGetIconUri(night, false, out uri)) this.NightIconUri = uri;
         }        
 
         public DateTimeOffset Date { get; }
@@ -114,6 +119,7 @@ namespace nZain.Dashboard.Models
             return items
                 .SelectMany(s => s.Weather)
                 .OrderByDescending(o => o.GetSortKey())
+                .ThenByDescending(o => o.Id)
                 .FirstOrDefault();
         }
 
@@ -131,6 +137,21 @@ namespace nZain.Dashboard.Models
                 .Where(w => w.Snow?.Volume3H != null)
                 .Sum(s => s.Snow.Volume3H.Value);
             return (int)Math.Round(sum);
+        }
+
+        private static bool TryGetIconUri(Weather weather, bool day, out string uri)
+        {
+            if (weather == null || string.IsNullOrWhiteSpace(weather.Icon))
+            {
+                uri = null;
+                return false;
+            }
+            string iconId = day
+                ? weather.Icon.Replace('n', 'd')
+                : weather.Icon.Replace('d', 'n');
+            uri = $"images/weather/{iconId}.png";
+            string fullpath = Path.Combine(Program.WebRoot, uri);
+            return File.Exists(fullpath);
         }
     }
 }
