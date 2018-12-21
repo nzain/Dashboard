@@ -18,7 +18,7 @@
     {
     <div class="row">
         <!-- Day-Header + Events Colum -->
-        <div class="col-lg-10">
+        <div class="col-lg-8">
             @if (item.Events.Length == 0)
             {
             <div class="day-header">@item.DisplayDate - keine Termine</div>
@@ -40,41 +40,28 @@
         </div>
 
         <!-- Weather Colum -->
-        <div class="col-lg-2">
-            @if (item.Weather != null)
-            {
-            @if (item.Weather.DayDescription != null)
-            {
-            @if (item.Weather.IsToday)
-            {
-                <img class="weatherIcon" src=@item.Weather.DayIconUri width="64" />
+        <div class="col-lg-4">
+        @if (item.Weather != null)
+        {
+            <!--tempMax° ImageDay ImageNight
+                tempMin°    ...       ...
+                <br/>
+                day description
+            -->
+            <img class="weatherIcon" src=@item.Weather.DayIconUri />
+            <div class="temperatures">
                 <div class="weatherDayTemp">@(item.Weather.TempMax)°C</div>
-                <br style="clear:both" />
-                <p><div class="weatherDay">@(item.Weather.DayDescription)</div></p>
-            }
-            else
-            {
-                <img class="weatherIcon" src=@item.Weather.DayIconUri width="48" />
-                <div class="weatherDayTemp">@(item.Weather.TempMax)°C</div>
-            }
-            <br style="clear:both; margin:5px" />
-            }
-            @if (item.Weather.NightDescription != null)
-            { 
-            @if (item.Weather.IsToday)
-            {
-                <img class="weatherIcon" src=@item.Weather.NightIconUri width="64" />
                 <div class="weatherNightTemp">@(item.Weather.TempMin)°C</div>
-                <br style="clear:both" />
+            </div>
+            <img class="weatherIcon" src=@item.Weather.NightIconUri />
+
+            @if (item.Weather.IsToday)
+            {
+                <br style="clear:both; margin:5px" />
+                <div class="weatherDay">@(item.Weather.DayDescription)</div>
                 <div class="weatherNight">@(item.Weather.NightDescription)</div>
             }
-            else
-            {
-                <img class="weatherIcon" src=@item.Weather.NightIconUri width="48" />
-                <div class="weatherNightTemp">@(item.Weather.TempMin)°C</div>
-            }
-            }
-            }
+        }
         </div>
 
         <!-- <img class="weatherIcon" src="images/50n.png" width="48" />

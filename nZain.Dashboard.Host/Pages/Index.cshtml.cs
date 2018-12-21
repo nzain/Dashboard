@@ -28,9 +28,9 @@ namespace nZain.Dashboard.Host.Pages
 
         public async Task OnGetAsync()
         {
-            this.NextDays = await this._calendarService.GetDataAsync(5);
             try
             {
+                this.NextDays = await this._calendarService.GetDataAsync(5);
                 WeatherForecast fc = await this._weatherService.GetForecastAsync();
                 foreach (var day in this.NextDays)
                 {

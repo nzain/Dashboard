@@ -20,10 +20,4 @@ ECHO deploying into rpi's ~/webapp dir...
 scp -r .\webapp pi@raspberrypi:/home/pi/
 ECHO.
 
-ECHO starting ASP.Net Server...
-ssh pi@raspberrypi "dotnet /home/pi/webapp/nZain.Dashboard.Host.dll"
-ECHO.
-REM ECHO reboot the rpi...
-REM ssh pi@raspberrypi "sudo reboot"
-
 PAUSE

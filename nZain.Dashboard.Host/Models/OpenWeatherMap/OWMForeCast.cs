@@ -201,7 +201,7 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
 
         public override string ToString()
         {
-            return this.Condition.ToString();
+            return $"[{this.Id}|{this.Icon}.png] {this.Description} (Condition={this.Condition})";
         }
     }
 

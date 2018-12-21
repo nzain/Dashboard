@@ -40,7 +40,7 @@ body { /* 16:9 max resolution is 1366x768 */
     color: darkgray;
 }
 .event {
-    font-size: 1.5em;
+    font-size: 2.5em;
     display: block;
 }
 .event-time {
@@ -59,25 +59,27 @@ body { /* 16:9 max resolution is 1366x768 */
 
 /*** Weather Style ***/
 .weatherIcon {
-    float: right;
+    display:block;
+    float:left;
+    width:33%;
+}
+.temperatures {
+    display:block;
+    text-align: center;
+    float:left;
+    width:34%;
 }
 .weatherDayTemp {
-    float: right;
-    padding-right: 15px;
-    font-size: 2em;
+    font-size: 3em;
 }
 .weatherNightTemp {
-    float: right;
-    padding-right: 15px;
     color: darkgray;
-    font-size: 2em;
+    font-size: 3em;
 }
 .weatherDay {
-    float: right;
-    font-size: 1.2em;
+    font-size: 2em;
 }
 .weatherNight {
-    float: right;
     color: darkgray;
-    font-size: 1.2em;
+    font-size: 2em;
 }
