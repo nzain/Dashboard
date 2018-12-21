@@ -149,7 +149,7 @@ namespace nZain.Dashboard.Models
             string iconId = day
                 ? weather.Icon.Replace('n', 'd')
                 : weather.Icon.Replace('d', 'n');
-            uri = $"images/weather/{iconId}.png";
+            uri = $"images/weather/{iconId}.svg";
             string fullpath = Path.Combine(Program.WebRoot, uri);
             return File.Exists(fullpath);
         }
