@@ -25,8 +25,15 @@ namespace nZain.Dashboard.Host.Pages
 
         public async Task OnGetAsync()
         {
-             // background will change every day
-            this.ViewData["Background"] = await this._backgroundImageService.GetBackgroundImageAsync();
+            try
+            {
+                // background will change every day
+                this.ViewData["Background"] = await this._backgroundImageService.GetBackgroundImageAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
             try
             {
