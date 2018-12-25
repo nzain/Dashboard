@@ -2,7 +2,7 @@ body { /* 16:9 max resolution is 1366x768 */
     margin: 0px;
     padding: 20px;
     color: whitesmoke;
-    background-image: url("../images/background.jpg"); /* TODO: we have to change this once in a while... */
+    /* background-image: url("../images/background.jpg"); */
     background-size: cover;
     overflow: hidden; /* we cannot scroll anyways :) */
 }

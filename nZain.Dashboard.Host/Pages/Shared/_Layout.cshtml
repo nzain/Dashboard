@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google" content="notranslate">
     <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="refresh" content="3600">
+    <meta http-equiv="refresh" content="900">
     <title>@ViewData["Title"] - nZain.Dashboard.Host</title>
 
     <environment include="Development">
@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 </head>
-<body>
+<body background=@ViewData["Background"]>
     @RenderBody()
 
     <environment include="Development">

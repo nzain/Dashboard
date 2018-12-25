@@ -13,6 +13,7 @@ using Google.Apis.Calendar.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.WebUtilities;
+using nZain.Dashboard.Host;
 using nZain.Dashboard.Models;
 using nZain.Dashboard.Models.OpenWeatherMap;
 
@@ -21,40 +22,19 @@ namespace nZain.Dashboard.Services
     public class WeatherService
     {
         private const string BaseAddress = "http://api.openweathermap.org";
-        private const string FileName = "Secrets/OpenWeatherMap.csv";
         private readonly string _appId;
         private readonly double _latitude;
         private readonly double _longitude;
         private readonly string _units; // e.g. "metric"
         private readonly string _language; // e.g. "en" - affects the description only
 
-        public WeatherService()
+        public WeatherService(DashboardConfig cfg)
         {
-            if (!File.Exists(FileName))
-            {
-                throw new FileNotFoundException(FileName);
-            }
-            using (var r = new StreamReader(FileName))
-            {
-                string line = r.ReadLine();
-                if (string.IsNullOrWhiteSpace(line))
-                {
-                    throw new InvalidDataException("expected three columns: appid;lat;lon;units;lang");
-                }
-                string[] columns = line.Split(';');
-                if (columns.Length != 5)
-                {
-                    throw new InvalidDataException("expected three columns: appid;lat;lon;units;lang");
-                }
-                this._appId = columns[0];
-                if (!double.TryParse(columns[1], NumberStyles.Float, NumberFormatInfo.InvariantInfo, out this._latitude) ||
-                    !double.TryParse(columns[2], NumberStyles.Float, NumberFormatInfo.InvariantInfo, out this._longitude))
-                {
-                    throw new InvalidDataException($"failed to parse lat/lon from '{line}'");
-                }
-                this._units = columns[3];
-                this._language = columns[4];
-            }
+            this._appId = cfg?.OpenWeatherMapAppId ?? throw new InvalidDataException("DashboardConfig.OpenWeatherMapAppId is not set");
+            this._units = cfg?.OpenWeatherMapUnits ?? throw new InvalidDataException("DashboardConfig.OpenWeatherMapUnits is not set");
+            this._latitude = cfg?.WeatherLocationLatitude ?? throw new InvalidDataException("DashboardConfig.WeatherLocationLatitude is not set");
+            this._longitude = cfg?.WeatherLocationLongitude ?? throw new InvalidDataException("DashboardConfig.WeatherLocationLongitude is not set");
+            this._language = cfg?.OpenWeatherMapLang ?? throw new InvalidDataException("DashboardConfig.OpenWeatherMapLang is not set");
         }
 
         public async Task<WeatherForecast> GetForecastAsync()

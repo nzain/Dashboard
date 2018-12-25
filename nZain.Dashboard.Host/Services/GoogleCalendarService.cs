@@ -9,6 +9,7 @@ using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
+using nZain.Dashboard.Host;
 using nZain.Dashboard.Models;
 
 namespace nZain.Dashboard.Services
@@ -64,19 +65,22 @@ namespace nZain.Dashboard.Services
 
         #region Service
 
+        private readonly string[] _calendarIds;
         private readonly CalendarService _googleService;
-        private readonly CalendarListService _calendarListService;
 
-        public GoogleCalendarService(CalendarService googleService, CalendarListService calendarListService)
+        public GoogleCalendarService(DashboardConfig cfg, CalendarService googleService)
         {
-            this._googleService = googleService ?? throw new ArgumentNullException(nameof(googleService));
-            this._calendarListService = calendarListService ?? throw new ArgumentNullException(nameof(calendarListService));
-
-            CalendarList calendars = this._googleService.CalendarList.List().Execute();
-            foreach (CalendarListEntry cal in calendars.Items)
+            Dictionary<string, string> calendars = cfg?.Calendars;
+            if (calendars == null)
             {
-                System.Console.WriteLine($"Calendar {cal.Id}: {cal.Summary}");
+                throw new InvalidDataException("DashboardConfig.Calendars is null");
             }
+            if (calendars.Count == 0)
+            {
+                throw new InvalidDataException("DashboardConfig.Calendars is empty");
+            }
+            this._calendarIds = calendars.Keys.ToArray();
+            this._googleService = googleService ?? throw new ArgumentNullException(nameof(googleService));
         }
 
         public IEnumerable<CalendarDay> EnumerateDays(int n)
@@ -104,7 +108,7 @@ namespace nZain.Dashboard.Services
             // TODO create days first, properly set start/end
             // TODO then populate with events from each calendar response
 
-            foreach (string calendarId in this._calendarListService.CalendarIds)
+            foreach (string calendarId in this._calendarIds)
             {
                 Events response = await this.QueryCalendarEventsAsync(calendarId, n, d);
                 results.AddRange(EnumerateDays(n, response, d));

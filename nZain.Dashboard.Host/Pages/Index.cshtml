@@ -4,7 +4,6 @@
     ViewData["Title"] = "Dashboard";
 }
 <div class="container-fluid">
-
     <!-- Header: date, time -->
     <div class="header row">
         <div class="col-lg-10 date" id="date"></div>
@@ -13,6 +12,7 @@
             <div class="seconds" id="seconds"></div>
         </div>
     </div>
+
 
     @foreach (var item in Model.NextDays)
     {
@@ -98,4 +98,4 @@
     }
     setInterval(updateDateTime, 1000);
 </script>
-</div><!-- end Container Body-Content -->
+</div>

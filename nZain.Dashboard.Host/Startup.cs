@@ -27,9 +27,12 @@ namespace nZain.Dashboard.Host
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddSingleton(Program.Config);
+
             services.AddSingleton(Program.GoogleService); // google calendar API
-            services.AddSingleton(Program.CalendarListService); // list of my CalendarIds loaded from a file
-            services.AddSingleton<GoogleCalendarService, GoogleCalendarService>(); // the final wrapper
+            services.AddSingleton<GoogleCalendarService, GoogleCalendarService>(); // the final wrapper we use
+
+            services.AddSingleton<BackgroundImageService, BackgroundImageService>();
 
             services.AddSingleton<WeatherService, WeatherService>();
         }

@@ -11,26 +11,29 @@ namespace nZain.Dashboard.Host.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly BackgroundImageService _backgroundImageService;
         private readonly GoogleCalendarService _calendarService;
         private readonly WeatherService _weatherService;
 
-        public IndexModel(GoogleCalendarService calendarService, WeatherService weatherService)
+        public IndexModel(BackgroundImageService backgroundImageService, GoogleCalendarService calendarService, WeatherService weatherService)
         {
+            this._backgroundImageService = backgroundImageService;
             this._calendarService = calendarService;
             this._weatherService = weatherService;
             this.NextDays = new CalendarDay[0];
         }
 
-        // public void OnGet()
-        // {
-        //     this.NextDays = this._calendarService.EnumerateDays(5).ToArray();
-        // }
-
         public async Task OnGetAsync()
         {
+             // background will change every day
+            this.ViewData["Background"] = await this._backgroundImageService.GetBackgroundImageAsync();
+
             try
             {
+                // calendar
                 this.NextDays = await this._calendarService.GetDataAsync(5);
+
+                // weather forecast
                 WeatherForecast fc = await this._weatherService.GetForecastAsync();
                 foreach (var day in this.NextDays)
                 {
