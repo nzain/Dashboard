@@ -27,7 +27,8 @@ namespace nZain.Dashboard.Host
                 Config = (DashboardConfig)serializer.Deserialize(r, typeof(DashboardConfig));
             }
 #if DEBUG
-            Config.BackgroundImagesPath = Environment.GetFolderPath(SpecialFolder.MyPictures);
+            // doesn't work on raspbian!
+            Config.BackgroundImagesPath = @"\\SynologyDS218j\photo\DashboardBackgrounds";
 #endif
 
             // 2) this one is complex, async, and long. We can't properly call this during ConfigureServices...
