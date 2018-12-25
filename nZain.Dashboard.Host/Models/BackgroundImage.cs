@@ -37,5 +37,10 @@ namespace nZain.Dashboard.Models
         public string Location { get; }
 
         public string RelativeWebRootLocation { get; set; }
+
+        public override string ToString()
+        {
+            return $"{this.Location} {this.Timestamp.Year} ({this.CameraModel})";
+        }
     }
 }

@@ -30,6 +30,7 @@ namespace nZain.Dashboard.Host.Pages
                 // background will change every day
                 BackgroundImage bgImg = await this._backgroundImageService.GetBackgroundImageAsync();
                 this.ViewData["Background"] = bgImg.RelativeWebRootLocation;
+                this.Background = bgImg;
             }
             catch(Exception e)
             {
@@ -55,5 +56,7 @@ namespace nZain.Dashboard.Host.Pages
         }
 
         public CalendarDay[] NextDays { get; private set; }
+
+        public BackgroundImage Background { get; private set; }
     }
 }

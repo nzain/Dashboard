@@ -48,7 +48,14 @@
                 <br/>
                 day description
             -->
-            <img class="weatherIcon" src=@item.Weather.DayIconUri />
+            @if (string.IsNullOrWhiteSpace(item.Weather.DayIconUri))
+            {
+                <div class="weatherIcon">&nbsp;</div>
+            }
+            else
+            {
+                <img class="weatherIcon" src=@item.Weather.DayIconUri />
+            }
             <div class="temperatures">
                 <div class="weatherDayTemp">@(item.Weather.TempMax)°C</div>
                 <div class="weatherNightTemp">@(item.Weather.TempMin)°C</div>
@@ -64,28 +71,13 @@
         }
         </div>
 
-        <!-- <img class="weatherIcon" src="images/50n.png" width="48" />
-        <img class="weatherIcon" src="images/13n.png" width="48" />
-        <img class="weatherIcon" src="images/11n.png" width="48" />
-        <img class="weatherIcon" src="images/10n.png" width="48" />
-        <img class="weatherIcon" src="images/09n.png" width="48" />
-        <img class="weatherIcon" src="images/04n.png" width="48" />
-        <img class="weatherIcon" src="images/03n.png" width="48" />
-        <img class="weatherIcon" src="images/02n.png" width="48" />
-        <img class="weatherIcon" src="images/01n.png" width="48" />
-
-        <img class="weatherIcon" src="images/50d.png" width="48" />
-        <img class="weatherIcon" src="images/13d.png" width="48" />
-        <img class="weatherIcon" src="images/11d.png" width="48" />
-        <img class="weatherIcon" src="images/10d.png" width="48" />
-        <img class="weatherIcon" src="images/09d.png" width="48" />
-        <img class="weatherIcon" src="images/04d.png" width="48" />
-        <img class="weatherIcon" src="images/03d.png" width="48" />
-        <img class="weatherIcon" src="images/02d.png" width="48" />
-        <img class="weatherIcon" src="images/01d.png" width="48" /> -->
-
     </div><!-- end of row -->
 }
+</div>
+
+<footer id="footer">
+    <p>@Model.Background</p>
+</footer>
 
 <script>
     updateDateTime();
@@ -98,4 +90,3 @@
     }
     setInterval(updateDateTime, 1000);
 </script>
-</div>

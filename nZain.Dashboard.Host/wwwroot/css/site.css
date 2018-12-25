@@ -2,7 +2,6 @@ body { /* 16:9 max resolution is 1366x768 */
     margin: 0px;
     padding: 20px;
     color: whitesmoke;
-    /* background-image: url("../images/background.jpg"); */
     background-size: cover;
     overflow: hidden; /* we cannot scroll anyways :) */
 }
@@ -31,7 +30,7 @@ body { /* 16:9 max resolution is 1366x768 */
 }
 .seconds {
     display: inline;
-    color: gray;
+    color: darkgray;
 }
 
 /*** Event Style ***/
@@ -82,4 +81,18 @@ body { /* 16:9 max resolution is 1366x768 */
 .weatherNight {
     color: darkgray;
     font-size: 2em;
+}
+
+#footer
+{
+    clear: both;
+    position: fixed;
+    bottom: 0px;
+    margin: 0;
+    padding-bottom: 5px;
+    padding-right: 50px;
+    width: 100%;
+    text-align: Right;
+    vertical-align: middle;
+    line-height: normal;
 }
