@@ -124,7 +124,7 @@ namespace nZain.Dashboard.Services
             // Define parameters of request.
             EventsResource.ListRequest request = this._googleService.Events.List(calendarId);
             request.TimeMin = d.Date;
-            request.TimeMax = new DateTimeOffset(d.Year, d.Month, d.Day, 23, 59, 59, d.Offset).AddDays(1).Date;
+            request.TimeMax = new DateTimeOffset(d.Year, d.Month, d.Day, 23, 59, 59, d.Offset).AddDays(n).Date;
             request.ShowDeleted = false;
             request.SingleEvents = true;
             request.MaxResults = 20;
