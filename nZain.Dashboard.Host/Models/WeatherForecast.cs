@@ -41,5 +41,14 @@ namespace nZain.Dashboard.Models
         public string CityName { get; }
 
         public WeatherForecastDay[] Days { get; }
+
+        public override string ToString()
+        {
+            if (this.Days == null)
+            {
+                return "Invalid (empty) forecast";
+            }
+            return $"{this.Days.Length}-day Forecast";
+        }
     }
 }

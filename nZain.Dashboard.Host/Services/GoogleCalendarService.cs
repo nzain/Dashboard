@@ -94,7 +94,7 @@ namespace nZain.Dashboard.Services
             }
         }
 
-        public async Task<CalendarDay[]> GetDataAsync(int n)
+        public async Task<CalendarDay[]> GetCalendarEventsAsync(int n)
         {
             if (n < 1)
             {

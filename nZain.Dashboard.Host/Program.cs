@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NLog.Web;
 using nZain.Dashboard.Services;
 using static System.Environment;
 
@@ -20,28 +21,45 @@ namespace nZain.Dashboard.Host
     {
         public static async Task Main(string[] args)
         {
-            // 1) read private config file (not on github)
-            using (var r = new StreamReader("Secrets/DashboardConfig.json"))
+            // NLog: setup the logger first to catch all errors
+            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            try
             {
-                JsonSerializer serializer = new JsonSerializer();
-                Config = (DashboardConfig)serializer.Deserialize(r, typeof(DashboardConfig));
-            }
+                logger.Debug("Startup...");
+
+                // 1) read private config file (not on github)
+                using (var r = new StreamReader("Secrets/DashboardConfig.json"))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    Config = (DashboardConfig)serializer.Deserialize(r, typeof(DashboardConfig));
+                }
 #if DEBUG
-            // doesn't work on raspbian!
-            Config.BackgroundImagesPath = @"\\SynologyDS218j\photo\DashboardBackgrounds";
+                // this UNC path doesn't work on raspbian!
+                Config.BackgroundImagesPath = @"\\SynologyDS218j\photo\DashboardBackgrounds";
 #endif
 
-            // 2) this one is complex, async, and long. We can't properly call this during ConfigureServices...
-            GoogleService = await GoogleCalendarService.GoogleCalendarAuthAsync();
+                // 2) this one is complex, async, and long. We can't properly call this during ConfigureServices...
+                GoogleService = await GoogleCalendarService.GoogleCalendarAuthAsync();
 
-            // Want to know, which calendar IDs you have?
-            // foreach (var kvp in await CalendarListService.QueryCalendarIdsAsync(GoogleService))
-            // {
-            //     Console.WriteLine($"CalendarID;Summary: {kvp.Key};{kvp.Value}");
-            // }
+                // Want to know, which calendar IDs you have?
+                // foreach (var kvp in await CalendarListService.QueryCalendarIdsAsync(GoogleService))
+                // {
+                //     Console.WriteLine($"CalendarID;Summary: {kvp.Key};{kvp.Value}");
+                // }
 
-            var host = CreateWebHostBuilder(args).Build();
-            await host.RunAsync();
+                var host = CreateWebHostBuilder(args).Build();
+                await host.RunAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Stopped program because of exception");
+                throw;
+            }
+            finally
+            {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                NLog.LogManager.Shutdown();
+            }
         }
 
         internal static DashboardConfig Config { get; private set; }
@@ -65,6 +83,8 @@ namespace nZain.Dashboard.Host
                 //     })
                 .UseKestrel(o => o.Listen(IPAddress.Loopback, 5000)) // http:localhost:5000
                 .UseWebRoot(WebRoot)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .ConfigureLogging(logging => logging.ClearProviders())
+                .UseNLog();  // NLog: setup NLog for Dependency injection
     }
 }
