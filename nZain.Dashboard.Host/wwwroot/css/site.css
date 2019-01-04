@@ -10,9 +10,7 @@ body { /* 16:9 max resolution is 1366x768 */
 /*** BootStrap/FlexBox Grid Style ***/
 .row {
     padding: 10px;
-    margin-bottom: 15px;
-    margin-left: 15px;
-    margin-right: 15px;
+    margin: 15px;
     border-radius: 20px;
     background: #00000060;
     box-shadow: 5px 5px 5px #00000035;
@@ -33,7 +31,7 @@ body { /* 16:9 max resolution is 1366x768 */
 
 /*** Event Style ***/
 .day-header {
-    font-size: 1.5em;
+    font-size: 2em;
     color: lightgray;
 }
 .event {
@@ -71,15 +69,17 @@ body { /* 16:9 max resolution is 1366x768 */
     font-size: 2.5em;
 }
 .weatherNightTemp {
-    color: lightgray;
     font-size: 2.5em;
+    color: lightgray;
 }
 .weatherDay {
     font-size: 1.5em;
+    text-align: center;
 }
 .weatherNight {
-    color: lightgray;
     font-size: 1.5em;
+    text-align: center;
+    color: lightgray;
 }
 
 #footer

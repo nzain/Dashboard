@@ -16,16 +16,8 @@
                 <div class="seconds" id="seconds"></div>
             </div>
             <div class="col-lg-3">
-                <div class="weatherDay">
-                    <span>Tag:</span>
-                    <span>@(Model.TodayWeatherDay)</span>
-                </div>
-                <div class="weatherNight">
-                    <span>Nacht:</span>
-                    <span>@(Model.TodayWeatherNight)</span>
-                </div>
-                <!-- <div class="weatherDay">@(Model.TodayWeatherDay)</div>
-                <div class="weatherNight">@(Model.TodayWeatherNight)</div> -->
+                <div class="weatherDay">@(Model.TodayWeatherDay)</div>
+                <div class="weatherNight">@(Model.TodayWeatherNight)</div>
             </div>
         }
 
@@ -76,7 +68,7 @@
     updateDateTime();
     function updateDateTime() {
         var now = new Date();
-        document.getElementById("date").innerHTML    = now.toLocaleDateString("de-DE", {weekitem:'long', year:'numeric', month:'long', day:'numeric'});
+        document.getElementById("date").innerHTML    = now.toLocaleDateString("de-DE", {weekday:'long', year:'numeric', month:'long', day:'numeric'});
         document.getElementById("time").innerHTML    = now.toLocaleTimeString("de-DE", {hour:'2-digit', minute:'2-digit'});
         var seconds = now.getSeconds();
         document.getElementById("seconds").innerHTML = (seconds<10?'0':'')+seconds;

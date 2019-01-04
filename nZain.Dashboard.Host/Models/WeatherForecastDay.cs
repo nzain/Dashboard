@@ -59,7 +59,7 @@ namespace nZain.Dashboard.Models
             if (day != null)
             {
                 this.DayIconUri = day.IconUri;
-                this.DayDescription = day.Description;
+                this.DayDescription = "Tag: " + day.Description;
                 int volume = this.DayRain + this.DaySnow;
                 if (volume > 0)
                 {
@@ -68,6 +68,10 @@ namespace nZain.Dashboard.Models
                         : $" {volume}L"; // Leichter Regen 3L
                 }
             }
+            else
+            {
+                this.DayDescription = "\u00A0"; // &nbsp;
+            }
             
             this.NightRain = TotalRain(weatherNight);
             this.NightSnow = TotalSnow(weatherNight);
@@ -75,7 +79,7 @@ namespace nZain.Dashboard.Models
             if (night != null)
             {
                 this.NightIconUri = night.IconUri;
-                this.NightDescription = night.Description;
+                this.NightDescription = "Nacht: " + night.Description;
                 int volume = this.NightRain + this.NightSnow;
                 if (volume > 0)
                 {
@@ -83,6 +87,10 @@ namespace nZain.Dashboard.Models
                         ? $" {volume}mm" // Schnee 4mm
                         : $" {volume}L"; // Leichter Regen 3L
                 }
+            }
+            else
+            {
+                this.NightDescription = "\u00A0"; // &nbsp;
             }
 
             if (TryGetIconUri(day, true, out string uri)) this.DayIconUri = uri;

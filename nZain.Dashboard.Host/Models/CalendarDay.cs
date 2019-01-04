@@ -23,16 +23,11 @@ namespace nZain.Dashboard.Models
                 this.DisplayDate = events.Length == 0 ? "Heute keine Termine" : null;
                 this.IsToday = true;
             }
-            else if (date.Day == now.AddDays(1).Day)
-            {
-                this.DisplayDate = events.Length == 0 ? "Morgen keine Termine" : "Morgen";
-                this.IsToday = false;
-            }
             else
             {
                 this.DisplayDate = events.Length == 0 
-                    ? date.ToString("d. MMMM") + " - keine Termine"
-                    : date.ToString("d. MMMM");
+                    ? $"{date:dddd, d. MMMM} - keine Termine"
+                    : $"{date:dddd, d. MMMM}";
                 this.IsToday = false;
             }
         }
