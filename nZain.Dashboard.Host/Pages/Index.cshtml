@@ -4,27 +4,33 @@
     ViewData["Title"] = "Dashboard";
 }
 <div class="container-fluid">
-    <!-- Header: date, time -->
-    <div class="header row">
-        <div class="col-lg-10 date" id="date"></div>
-        <div class="col-lg-2">
-            <div class="time" id="time"></div>
-            <div class="seconds" id="seconds"></div>
-        </div>
-    </div>
-
-
     @foreach (var item in Model.NextDays)
     {
     <div class="row">
+        <!-- Header: date, time -->
+        @if (item.IsToday)
+        {
+            <div class="col-lg-6 date" id="date"></div>
+            <div class="col-lg-3">
+                <div class="time" id="time"></div>
+                <div class="seconds" id="seconds"></div>
+            </div>
+            <div class="col-lg-3">
+                <div class="weatherDay">
+                    <span>Tag:</span>
+                    <span>@(Model.TodayWeatherDay)</span>
+                </div>
+                <div class="weatherNight">
+                    <span>Nacht:</span>
+                    <span>@(Model.TodayWeatherNight)</span>
+                </div>
+                <!-- <div class="weatherDay">@(Model.TodayWeatherDay)</div>
+                <div class="weatherNight">@(Model.TodayWeatherNight)</div> -->
+            </div>
+        }
+
         <!-- Day-Header + Events Colum -->
-        <div class="col-lg-8">
-            @if (item.Events.Length == 0)
-            {
-            <div class="day-header">@item.DisplayDate - keine Termine</div>
-            }
-            else 
-            {
+        <div class="col-lg-9">
             <div class="day-header">@item.DisplayDate</div>
             @foreach (var ev in item.Events)
             {    
@@ -36,18 +42,12 @@
                 <div class="event-description">@ev.Summary</div>
             </div>
             }
-            }
         </div>
 
         <!-- Weather Colum -->
-        <div class="col-lg-4">
+        <div class="col-lg-3">
         @if (item.Weather != null)
         {
-            <!--tempMax° ImageDay ImageNight
-                tempMin°    ...       ...
-                <br/>
-                day description
-            -->
             @if (string.IsNullOrWhiteSpace(item.Weather.DayIconUri))
             {
                 <div class="weatherIcon">&nbsp;</div>
@@ -61,13 +61,6 @@
                 <div class="weatherNightTemp">@(item.Weather.TempMin)°C</div>
             </div>
             <img class="weatherIcon" src=@item.Weather.NightIconUri />
-
-            @if (item.Weather.IsToday)
-            {
-                <br style="clear:both; margin:5px" />
-                <div class="weatherDay">@(item.Weather.DayDescription)</div>
-                <div class="weatherNight">@(item.Weather.NightDescription)</div>
-            }
         }
         </div>
 

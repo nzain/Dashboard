@@ -20,19 +20,26 @@ namespace nZain.Dashboard.Models
             var now = DateTimeOffset.Now;
             if (date.Day == now.Day)
             {
-                this.DisplayDate = "Heute";
+                this.DisplayDate = events.Length == 0 ? "Heute keine Termine" : null;
+                this.IsToday = true;
             }
             else if (date.Day == now.AddDays(1).Day)
             {
-                this.DisplayDate = "Morgen";
+                this.DisplayDate = events.Length == 0 ? "Morgen keine Termine" : "Morgen";
+                this.IsToday = false;
             }
             else
             {
-                this.DisplayDate = date.ToString("d. MMMM");
+                this.DisplayDate = events.Length == 0 
+                    ? date.ToString("d. MMMM") + " - keine Termine"
+                    : date.ToString("d. MMMM");
+                this.IsToday = false;
             }
         }
 
         public DateTimeOffset Date { get; }
+
+        public bool IsToday { get; }
 
         public string DisplayDate { get; }
 

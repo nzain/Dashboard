@@ -68,8 +68,11 @@ namespace nZain.Dashboard.Host.Pages
             }
         }
 
+        public BackgroundImage Background { get; private set; }
+
         public CalendarDay[] NextDays { get; private set; }
 
-        public BackgroundImage Background { get; private set; }
+        public string TodayWeatherDay => this.NextDays.FirstOrDefault()?.Weather?.DayDescription;
+        public string TodayWeatherNight => this.NextDays.FirstOrDefault()?.Weather?.NightDescription;
     }
 }

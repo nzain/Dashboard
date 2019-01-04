@@ -1,6 +1,6 @@
 body { /* 16:9 max resolution is 1366x768 */
-    margin: 0px;
-    padding: 20px;
+    /* margin: 0px;
+    padding: 0px; */
     color: whitesmoke;
     background-size: cover;
     overflow: hidden; /* we cannot scroll anyways :) */
@@ -9,8 +9,10 @@ body { /* 16:9 max resolution is 1366x768 */
 
 /*** BootStrap/FlexBox Grid Style ***/
 .row {
-    padding: 15px;
+    padding: 10px;
     margin-bottom: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
     border-radius: 20px;
     background: #00000060;
     box-shadow: 5px 5px 5px #00000035;
@@ -22,29 +24,29 @@ body { /* 16:9 max resolution is 1366x768 */
 
 /*** Date/Time Header Stuff ***/
 .date {
-    font-size: 4em;
+    font-size: 3em;
 }
 .time {
     display: inline;
-    font-size: 4em;
+    font-size: 3em;
 }
 .seconds {
     display: inline;
-    color: darkgray;
+    color: lightgray;
 }
 
 /*** Event Style ***/
 .day-header {
-    font-size: 2em;
-    color: darkgray;
+    font-size: 1.5em;
+    color: lightgray;
 }
 .event {
-    font-size: 2.5em;
+    font-size: 2em;
     display: block;
 }
 .event-time {
     display: inline;
-    color: darkgray;
+    color: lightgray;
     margin-right: 10px;
 }
 .event-description {
@@ -53,7 +55,7 @@ body { /* 16:9 max resolution is 1366x768 */
 .event-location {
     display: block;
     padding-left: 40px;
-    color: darkgray;
+    color: lightgray;
 }
 
 /*** Weather Style ***/
@@ -61,6 +63,7 @@ body { /* 16:9 max resolution is 1366x768 */
     display:block;
     float:left;
     width:33%;
+    max-height: 100px;
 }
 .temperatures {
     display:block;
@@ -69,18 +72,18 @@ body { /* 16:9 max resolution is 1366x768 */
     width:34%;
 }
 .weatherDayTemp {
-    font-size: 3em;
+    font-size: 2.5em;
 }
 .weatherNightTemp {
-    color: darkgray;
-    font-size: 3em;
+    color: lightgray;
+    font-size: 2.5em;
 }
 .weatherDay {
-    font-size: 2em;
+    font-size: 1.5em;
 }
 .weatherNight {
-    color: darkgray;
-    font-size: 2em;
+    color: lightgray;
+    font-size: 1.5em;
 }
 
 #footer
