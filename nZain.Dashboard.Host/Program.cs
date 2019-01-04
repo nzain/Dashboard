@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NLog;
 using NLog.Web;
 using nZain.Dashboard.Services;
 using static System.Environment;
@@ -22,10 +23,15 @@ namespace nZain.Dashboard.Host
         public static async Task Main(string[] args)
         {
             // NLog: setup the logger first to catch all errors
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            LogFactory nlog = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config");
+#if DEBUG
+            DebugLoggingConfig.ActivateDebugLogging();
+#endif
+            var logger = nlog.GetCurrentClassLogger();
+            logger.Info("Startup...");
+
             try
             {
-                logger.Debug("Startup...");
 
                 // 1) read private config file (not on github)
                 using (var r = new StreamReader("Secrets/DashboardConfig.json"))
@@ -47,7 +53,9 @@ namespace nZain.Dashboard.Host
                 //     Console.WriteLine($"CalendarID;Summary: {kvp.Key};{kvp.Value}");
                 // }
 
+                logger.Info("Build WebHost...");
                 var host = CreateWebHostBuilder(args).Build();
+                logger.Info("Run WebHost!");
                 await host.RunAsync();
             }
             catch (Exception ex)

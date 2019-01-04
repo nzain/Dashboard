@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using nZain.Dashboard.Host;
 using nZain.Dashboard.Models;
 using SixLabors.ImageSharp;
@@ -18,25 +19,22 @@ namespace nZain.Dashboard.Services
     {
         private const string BasePath = "images";
 
+        private readonly ILogger<BackgroundImageService> _logger;
         // might be on a NAS, don't access it on every request
         private readonly string _imagesSourcePath;
-
         // local copy goes here on our own filesystem
         private readonly string _localCopyFullPath; // wwwroot/images/background.jpg
-
         // relative path to our wwwroot for browser access
         private readonly string _relativePath; // images/background.jpg
-
         // FIFO queue of next background images to reduce the EXIF parsing load
         private Queue<BackgroundImage> _nextBackgrounds;
-
         private BackgroundImage _lastImage;
-
         // timestamp of last change
         private DateTimeOffset _lastChange;
 
-        public BackgroundImageService(DashboardConfig cfg, IHostingEnvironment env)
+        public BackgroundImageService(ILogger<BackgroundImageService> logger, DashboardConfig cfg, IHostingEnvironment env)
         {
+            this._logger = logger;
             this._imagesSourcePath = cfg?.BackgroundImagesPath ?? throw new InvalidDataException("DashboardConfig.BackgroundImagesPath is not set");
             if (!Directory.Exists(this._imagesSourcePath))
             {
@@ -45,6 +43,7 @@ namespace nZain.Dashboard.Services
             this._localCopyFullPath = Path.Combine(env.WebRootPath, BasePath, "background.jpg");
             this._relativePath = Path.Combine(BasePath, "background.jpg");
             this._nextBackgrounds = new Queue<BackgroundImage>(31); // up to one month ahead
+            this._logger.LogInformation(nameof(BackgroundImageService) + " created");
         }
 
         public async Task<BackgroundImage> GetBackgroundImageAsync()
@@ -56,6 +55,7 @@ namespace nZain.Dashboard.Services
             if (now.Day != this._lastChange.Day) // RELEASE: change on first request after midnight
 #endif
             {
+                this._logger.LogInformation("Fetching new background...");
                 this._lastChange = now;
                 if (this._nextBackgrounds.Count == 0) // generate random queue of next images
                 {
@@ -90,6 +90,7 @@ namespace nZain.Dashboard.Services
 
         private void FillBackgroundsQueue()
         {
+            this._logger.LogInformation("Regenerate upcoming queue of background images (long task)...");
             DirectoryInfo dir = new DirectoryInfo(this._imagesSourcePath);
             if (!dir.Exists)
             {
@@ -99,6 +100,7 @@ namespace nZain.Dashboard.Services
             DateTimeOffset now = DateTimeOffset.Now;
             int month = now.Month;
             List<BackgroundImage> images = new List<BackgroundImage>(30);
+            int count = 0;
             foreach (var item in dir.EnumerateFiles("*", SearchOption.AllDirectories))
             {
                 if (!TryLoad(item, out BackgroundImage bgImg))
@@ -110,7 +112,12 @@ namespace nZain.Dashboard.Services
                     // show summer pics during summer only
                     images.Add(bgImg);
                 }
+                if (++count % 20 == 0)
+                {
+                    this._logger.LogInformation(" {0,2}/{1,3} images selected...", images.Count, count);
+                }
             }
+            this._logger.LogInformation(" {0,2}/{1,3} images selected! Create randomized queue...", images.Count, count);
             // free memory, we use this service once per month ideally
             Configuration.Default.MemoryAllocator.ReleaseRetainedResources();
 
@@ -124,11 +131,13 @@ namespace nZain.Dashboard.Services
                     break;
                 }
             }
-
-            // validation
             if (this._nextBackgrounds.Count == 0)
             {
-                throw new InvalidOperationException($"no images for month '{month}' in '{this._imagesSourcePath}'");
+                this._logger.LogError($"No images for month '{month}' in '{this._imagesSourcePath}'");
+            }
+            else
+            {
+                this._logger.LogInformation("Queue of {0} background images ready.", this._nextBackgrounds.Count);
             }
         }
 

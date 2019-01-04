@@ -17,10 +17,6 @@ body { /* 16:9 max resolution is 1366x768 */
     background: #00000060;
     box-shadow: 5px 5px 5px #00000035;
 }
-.header {
-    background: #00000070;
-    box-shadow: 5px 5px 5px #00000035;
-}
 
 /*** Date/Time Header Stuff ***/
 .date {
