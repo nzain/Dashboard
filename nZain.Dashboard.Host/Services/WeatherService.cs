@@ -13,6 +13,7 @@ using Google.Apis.Calendar.v3.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using nZain.Dashboard.Host;
 using nZain.Dashboard.Models;
 using nZain.Dashboard.Models.OpenWeatherMap;
@@ -22,14 +23,18 @@ namespace nZain.Dashboard.Services
     public class WeatherService
     {
         private const string BaseAddress = "http://api.openweathermap.org";
+        private readonly ILogger<WeatherService> _logger;
         private readonly string _appId;
         private readonly double _latitude;
         private readonly double _longitude;
         private readonly string _units; // e.g. "metric"
         private readonly string _language; // e.g. "en" - affects the description only
 
-        public WeatherService(DashboardConfig cfg)
+        private WeatherForecast _cachedResult; // if OWM is down
+
+        public WeatherService(ILogger<WeatherService> logger, DashboardConfig cfg)
         {
+            this._logger = logger;
             this._appId = cfg?.OpenWeatherMapAppId ?? throw new InvalidDataException("DashboardConfig.OpenWeatherMapAppId is not set");
             this._units = cfg?.OpenWeatherMapUnits ?? throw new InvalidDataException("DashboardConfig.OpenWeatherMapUnits is not set");
             this._latitude = cfg?.WeatherLocationLatitude ?? throw new InvalidDataException("DashboardConfig.WeatherLocationLatitude is not set");
@@ -39,11 +44,21 @@ namespace nZain.Dashboard.Services
 
         public async Task<WeatherForecast> GetForecastAsync()
         {
-            OWMForeCast fc = await this.GetOpenWeatherMapForecastAsync();
-            return new WeatherForecast(fc);
+            try
+            {
+                OWMForeCast fc = await this.GetOpenWeatherMapForecastAsync();
+                var result = new WeatherForecast(fc);
+                this._cachedResult = result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(e, "Failed to query OpenWeatherMap forecast");
+                return this._cachedResult; // might be null or outdated but our best guess.
+            }
         }
 
-        internal async Task<OWMForeCast> GetOpenWeatherMapForecastAsync()
+        private async Task<OWMForeCast> GetOpenWeatherMapForecastAsync()
         {
             using (var client = this.CreateClient())
             {
@@ -56,7 +71,7 @@ namespace nZain.Dashboard.Services
 
         private HttpClient CreateClient()
         {
-            var client = new HttpClient{ BaseAddress = new Uri(BaseAddress) };
+            var client = new HttpClient { BaseAddress = new Uri(BaseAddress) };
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return client;
