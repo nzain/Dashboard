@@ -15,7 +15,7 @@ namespace nZain.Dashboard.Host
             // Step 2. Create targets
             var debugTarget = new ColoredConsoleTarget("debugTarget")
             {
-                Layout = @"${date:format=HH\:mm\:ss.fff}|${uppercase:${level:format=FirstCharacter}}|${logger:shortName=true}|${message} ${exception:format=tostring} | ${aspnet-request-url}"
+                Layout = @"${date:format=HH\:mm\:ss.fff}|${uppercase:${level:format=FirstCharacter}}|${logger:shortName=true}|${message} ${exception:format=tostring}"
             };
 
             debugTarget.RowHighlightingRules.Clear();
