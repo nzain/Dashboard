@@ -30,5 +30,13 @@ namespace nZain.Dashboard.Host
         public double WeatherLocationLatitude { get; set; } // degrees
 
         public double WeatherLocationLongitude { get; set; } // degrees
+
+        public int PirSensorPin { get; set; }
+
+        public double MonitorFadeoutTimeMinutes { get; set; }
+
+        public string WakeupTime { get; set; }
+
+        public string BedTime { get; set; }
     }
 }

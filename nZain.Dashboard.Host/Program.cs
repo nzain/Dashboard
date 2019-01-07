@@ -53,6 +53,12 @@ namespace nZain.Dashboard.Host
                 //     Console.WriteLine($"CalendarID;Summary: {kvp.Key};{kvp.Value}");
                 // }
 
+#if RELEASE
+                // 3) PIR sensor to control the monitor
+                PirSensorService = new PirSensorService(Config, new MonitorService());
+                PirSensorService.Start();
+#endif
+
                 logger.Info("Build WebHost...");
                 var host = CreateWebHostBuilder(args).Build();
                 logger.Info("Run WebHost!");
@@ -73,6 +79,8 @@ namespace nZain.Dashboard.Host
         internal static DashboardConfig Config { get; private set; }
 
         internal static CalendarService GoogleService { get; private set; }
+
+        internal static PirSensorService PirSensorService { get; private set; }
 
         public static string WebRoot => RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
             ? "/home/pi/webapp/wwwroot/" // not sure why we need this on linux.. ? Otherwise images/css don't show
