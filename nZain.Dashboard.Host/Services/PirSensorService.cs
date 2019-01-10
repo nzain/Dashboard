@@ -44,7 +44,9 @@ namespace nZain.Dashboard.Services
             }
         }
 
+#if LED
         public int LedPin { get; } = 18;
+#endif
 
         public int PirSensorPin { get; }
 
@@ -93,9 +95,11 @@ namespace nZain.Dashboard.Services
                 var controller = new GpioController(PinNumberingScheme.Logical);
                 using (controller)
                 {
+#if LED
                     controller.OpenPin(LedPin, PinMode.Output); //noop, this is the default
-                    controller.OpenPin(PirSensorPin, PinMode.Input); // write access /sys/class/gpio/gpio23/direction
                     Console.WriteLine($"Pin-{LedPin} enabled for PinMode.{controller.GetPinMode(LedPin)}");
+#endif
+                    controller.OpenPin(PirSensorPin, PinMode.Input); // write access /sys/class/gpio/gpio23/direction
                     Console.WriteLine($"Pin-{PirSensorPin} enabled for PinMode.{controller.GetPinMode(PirSensorPin)}");
                     
                     // blocking infinite call
@@ -114,8 +118,10 @@ namespace nZain.Dashboard.Services
 
         private void RunGpioLoop(GpioController controller)
         {
+#if LED
             controller.Write(LedPin, PinValue.Low);
             bool led = false;
+#endif
 
             PinValue lastPinValue = PinValue.Low;
             Stopwatch sw = new Stopwatch();
@@ -135,26 +141,32 @@ namespace nZain.Dashboard.Services
                     // a) Activity => Monitor on
                     sw.Restart();
                     this._monitorService.Status = MonitorService.MonitorStatus.On;
+#if LED
                     controller.Write(LedPin, PinValue.High);
                     led = true;
+#endif
                 }
                 else if (this.IsMonitorOn) // but PIR sensor inactive
                 {
                     var remaining = MonitorFadeoutTimeMs - sw.ElapsedMilliseconds;
                     if (remaining > 0)
                     {
-                        // b) blink LED => Monitor off soon
+                        // b) no activity for a while => Monitor off soon (blink LED)
                         this._monitorService.Status = MonitorService.MonitorStatus.Fading;
+#if LED
                         controller.Write(LedPin, led ? PinValue.Low : PinValue.High);
                         led = !led;
+#endif
                     }
                     else
                     {
                         // c) Monitor off
                         this._monitorService.Status = MonitorService.MonitorStatus.Off;
+                        sw.Stop();
+#if LED
                         controller.Write(LedPin, PinValue.Low);
                         led = false;
-                        sw.Stop();
+#endif
                     }
                 }
                 // else: idle
