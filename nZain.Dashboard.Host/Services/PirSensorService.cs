@@ -131,7 +131,9 @@ namespace nZain.Dashboard.Services
                 var timeOfDay = DateTimeOffset.Now.TimeOfDay;
                 if (this.WakeupTime > timeOfDay || timeOfDay > this.BedTime)
                 {
-                    Thread.Sleep(60000);
+                    this._monitorService.Status = MonitorService.MonitorStatus.Off;
+                    sw.Stop();
+                    Thread.Sleep(60*1000);
                     continue;
                 }
 
