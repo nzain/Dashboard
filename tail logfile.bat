@@ -1,1 +1,1 @@
-ssh pi@raspberrypi "tail /home/pi/webapp/logs/logfile.txt -n80 -f"
+ssh pi@raspberrypi "tail /home/pi/webapp/logs/logfile.txt -n300 -f"

@@ -29,13 +29,24 @@ namespace nZain.Dashboard.Services
             get => this._status;
             set
             {
+#if DEBUG
                 if (this._status == value)
                 {
                     return;
                 }
+#else
+                bool oldValue = (this._status != MonitorStatus.Off);
+                bool newValue = (value != MonitorStatus.Off);
+                if (oldValue == newValue)
+                {
+                    return;
+                }
+#endif
                 this.SetDisplayPower(value);
             }
         }
+
+        public bool IsMonitorOn => this.Status != MonitorStatus.Off;
 
         private void SetDisplayPower(MonitorStatus value)
         {

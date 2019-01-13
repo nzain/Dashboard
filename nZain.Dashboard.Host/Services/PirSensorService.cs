@@ -22,25 +22,28 @@ namespace nZain.Dashboard.Services
         public PirSensorService(DashboardConfig cfg, MonitorService monitorService)
         {
             this._monitorService = monitorService;
-// TODO ruhephasen aus cfg
             this.PirSensorPin = cfg.PirSensorPin;
             this.MonitorFadeoutTimeMs = (int)(cfg.MonitorFadeoutTimeMinutes * 60 * 1000);
 
             if (TimeSpan.TryParse(cfg.WakeupTime, CultureInfo.InvariantCulture, out TimeSpan wakeupTime))
             {
                 this.WakeupTime = wakeupTime;
+            Logger.Info($"Wakeup at {this.WakeupTime}");
             }
             else
             {
                 this.WakeupTime = new TimeSpan(06, 00, 00);
+            Logger.Warn($"Wakeup Fallback at {this.WakeupTime}");
             }
             if (TimeSpan.TryParse(cfg.BedTime, CultureInfo.InvariantCulture, out TimeSpan bedTime))
             {
                 this.BedTime = bedTime;
+            Logger.Info($"Bedtime at {this.BedTime}");
             }
             else
             {
                 this.BedTime = new TimeSpan(22, 00, 00);
+            Logger.Warn($"Bedtime Fallback at {this.BedTime}");
             }
         }
 
@@ -56,7 +59,7 @@ namespace nZain.Dashboard.Services
 
         public TimeSpan BedTime { get; }
 
-        public bool IsMonitorOn => this._monitorService.Status != MonitorService.MonitorStatus.Off;
+        public bool IsMonitorOn => this._monitorService.IsMonitorOn;
 
         public bool IsRunning => this._pollingThread != null;
 
