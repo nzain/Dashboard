@@ -93,8 +93,14 @@ namespace nZain.Dashboard.Models
                 this.NightDescription = "\u00A0"; // &nbsp;
             }
 
-            if (TryGetIconUri(day, true, out string uri)) this.DayIconUri = uri;
-            if (TryGetIconUri(night, false, out uri)) this.NightIconUri = uri;
+            if (TryGetIconUri(day, true, this.DayRain, this.DaySnow, out string uri))
+            {
+                this.DayIconUri = uri;
+            }
+            if (TryGetIconUri(night, false, this.NightRain, this.NightSnow, out uri)) 
+            {
+                this.NightIconUri = uri;
+            }
         }        
 
         public DateTimeOffset Date { get; }
@@ -147,7 +153,7 @@ namespace nZain.Dashboard.Models
             return (int)Math.Round(sum);
         }
 
-        private static bool TryGetIconUri(Weather weather, bool day, out string uri)
+        private static bool TryGetIconUri(Weather weather, bool day, int rainVol, int snowVol, out string uri)
         {
             if (weather == null || string.IsNullOrWhiteSpace(weather.Icon))
             {
@@ -157,9 +163,27 @@ namespace nZain.Dashboard.Models
             string iconId = day
                 ? weather.Icon.Replace('n', 'd')
                 : weather.Icon.Replace('d', 'n');
-            uri = $"images/weather/{iconId}.svg";
-            string fullpath = Path.Combine(Program.WebRoot, uri);
-            return File.Exists(fullpath);
+            
+            // 1. try specialized icon for given volume (rain/snow)
+            uri = BuildRainSnowIconUri(iconId, rainVol + snowVol);
+            if (File.Exists(Path.Combine(Program.WebRoot, uri)))
+            {
+                return true;
+            }
+            // 2. fallback to default icon
+            uri = BuildSimpleIconUri(iconId);
+            return File.Exists(Path.Combine(Program.WebRoot, uri));
+        }
+
+        private static string BuildRainSnowIconUri(string iconId, int volume)
+        {
+            if (volume < 1) volume = 1; // not below 1, zero is a typical argument.
+            return $"images/weather/{iconId}-r{volume}.svg";
+        }
+
+        private static string BuildSimpleIconUri(string iconId)
+        {
+            return $"images/weather/{iconId}.svg";
         }
     }
 }
