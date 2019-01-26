@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using nZain.Dashboard.Host;
 using nZain.Dashboard.Models;
+using nZain.Dashboard.Models.OpenStreetMap;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.MetaData;
 using SixLabors.ImageSharp.MetaData.Profiles.Exif;
@@ -20,6 +21,8 @@ namespace nZain.Dashboard.Services
         private const string BasePath = "images";
 
         private readonly ILogger<BackgroundImageService> _logger;
+        private readonly ReverseGeoCodingService _geoCodingService;
+
         // might be on a NAS, don't access it on every request
         private readonly string _imagesSourcePath;
         // local copy goes here on our own filesystem
@@ -32,9 +35,10 @@ namespace nZain.Dashboard.Services
         // timestamp of last change
         private DateTimeOffset _lastChange;
 
-        public BackgroundImageService(ILogger<BackgroundImageService> logger, DashboardConfig cfg, IHostingEnvironment env)
+        public BackgroundImageService(ILogger<BackgroundImageService> logger, DashboardConfig cfg, IHostingEnvironment env, ReverseGeoCodingService geoCodingService)
         {
             this._logger = logger;
+            this._geoCodingService = geoCodingService ?? throw new ArgumentNullException();
             this._imagesSourcePath = cfg?.BackgroundImagesPath ?? throw new InvalidDataException("DashboardConfig.BackgroundImagesPath is not set");
             if (!Directory.Exists(this._imagesSourcePath))
             {
@@ -63,6 +67,13 @@ namespace nZain.Dashboard.Services
                 }
                 // async copy to local disk of the next background image
                 this._lastImage = await this.CopyNextBackgroundToLocalCacheAsync();
+            }
+
+            GeoLocation location = this._lastImage?.Location;
+            if (location != null && this._lastImage.LocationDisplayString == null)
+            {
+                this._lastImage.LocationDisplayString = 
+                    await this._geoCodingService.ReverseGeoCodingAsync(location);
             }
 
             return this._lastImage;
@@ -181,10 +192,10 @@ namespace nZain.Dashboard.Services
                     model = modelValue.Value.ToString();
                 }
 
-                string location = null;
+                GeoLocation location = null;
                 if (TryGetGpsLocation(exif, out double lat, out double lon))
                 {
-                    location = $"lat {lat:F5} lon {lon:F5}";
+                    location = new GeoLocation(lat, lon);
                 }
 
                 bgImg = new BackgroundImage(file.FullName, imageInfo.Width, imageInfo.Height,

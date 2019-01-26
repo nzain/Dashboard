@@ -1,7 +1,7 @@
 body { /* 16:9 max resolution is 1366x768 */
     /* margin: 0px;
     padding: 0px; */
-    color: whitesmoke;
+    color: white;
     background-size: cover;
     overflow: hidden; /* we cannot scroll anyways :) */
 }
@@ -12,7 +12,7 @@ body { /* 16:9 max resolution is 1366x768 */
     padding: 10px;
     margin: 15px;
     border-radius: 20px;
-    background: #00000060;
+    background: #00000070;
     box-shadow: 5px 5px 5px #00000035;
 }
 

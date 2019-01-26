@@ -32,6 +32,7 @@ namespace nZain.Dashboard.Host
             services.AddSingleton(Program.GoogleService); // google calendar API
             services.AddSingleton<GoogleCalendarService, GoogleCalendarService>(); // the final wrapper we use
 
+            services.AddSingleton<ReverseGeoCodingService, ReverseGeoCodingService>();
             services.AddSingleton<BackgroundImageService, BackgroundImageService>();
 
             services.AddSingleton<WeatherService, WeatherService>();

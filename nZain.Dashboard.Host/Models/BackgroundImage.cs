@@ -1,20 +1,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.MetaData;
-using SixLabors.ImageSharp.MetaData.Profiles.Exif;
-using SixLabors.ImageSharp.Primitives;
+using nZain.Dashboard.Models.OpenStreetMap;
 
 namespace nZain.Dashboard.Models
 {
     public class BackgroundImage
     {
         public BackgroundImage(string fullPath, int width, int height, DateTimeOffset timestamp,
-            string cameraModel, string location = null)
+            string cameraModel, GeoLocation location)
         {
             this.OriginalSourceFile = fullPath;
             this.Width = width;
@@ -34,13 +29,23 @@ namespace nZain.Dashboard.Models
 
         public string CameraModel { get; }
 
-        public string Location { get; }
+        public GeoLocation Location { get; } // may be null
+
+        public string LocationDisplayString { get; set; } // may be null
 
         public string RelativeWebRootLocation { get; set; }
 
         public override string ToString()
         {
-            return $"{this.Location} {this.Timestamp.Year} ({this.CameraModel})";
+            if (!string.IsNullOrWhiteSpace(this.LocationDisplayString))
+            {
+                return $"{this.Timestamp.Year} {this.LocationDisplayString}";
+            }
+            if (this.Location != null)
+            {
+                return $"{this.Timestamp.Year} ({this.CameraModel}) lat={this.Location.Latitude:F3}° lon={this.Location.Longitude:F3}°";
+            }
+            return $"{this.Timestamp.Year} ({this.CameraModel})";
         }
     }
 }
