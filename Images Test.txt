@@ -1,0 +1,22 @@
+    <div class="row">
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/01d.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/02d.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/03d.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/04d.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/09d.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/10d.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/11d.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/13d.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/50d.svg" /></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/01n.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/02n.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/03n.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/04n.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/09n.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/10n.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/11n.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/13n.svg" /></div>
+        <div class="col-lg-1"><img class="weatherIcon" src="images/weather/50n.svg" /></div>
+    </div>
