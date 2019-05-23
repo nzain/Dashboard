@@ -83,17 +83,6 @@ namespace nZain.Dashboard.Services
             this._googleService = googleService ?? throw new ArgumentNullException(nameof(googleService));
         }
 
-        public IEnumerable<CalendarDay> EnumerateDays(int n)
-        {
-            DateTimeOffset d = DateTimeOffset.Now;
-            for (int i = 0; i < n; i++)
-            {
-                CalendarDay item = new CalendarDay(d, new CalendarEvent[0]);
-                yield return item;
-                d = d.AddDays(+1);
-            }
-        }
-
         public async Task<CalendarDay[]> GetCalendarEventsAsync(int n)
         {
             if (n < 1)
@@ -103,20 +92,19 @@ namespace nZain.Dashboard.Services
 
             DateTimeOffset d = DateTimeOffset.Now;
             d = new DateTimeOffset(d.Year, d.Month, d.Day, 0, 0, 0, d.Offset);
-            List<CalendarDay> results = new List<CalendarDay>();
 
             // TODO create days first, properly set start/end
             // TODO then populate with events from each calendar response
 
+            List<Events> responses = new List<Events>();
             foreach (string calendarId in this._calendarIds)
             {
                 Events response = await this.QueryCalendarEventsAsync(calendarId, n, d);
-                results.AddRange(EnumerateDays(n, response, d));
+                responses.Add(response);
             }
-            
-            // TODO MERGE days for multiple calendars
 
-            return results.ToArray();
+            // Merge results of multiple calendars
+            return EnumerateDays(n, responses, d).ToArray();
         }
 
         private Task<Events> QueryCalendarEventsAsync(string calendarId, int n, DateTimeOffset d)
@@ -134,15 +122,17 @@ namespace nZain.Dashboard.Services
             return request.ExecuteAsync();
         }
 
-        private static IEnumerable<CalendarDay> EnumerateDays(int n, Events response, DateTimeOffset d)
+        private static IEnumerable<CalendarDay> EnumerateDays(int n, List<Events> responses, DateTimeOffset d)
         {
-            CalendarEvent[] items = response.Items // multiple enumerations... might give unexpected result?
+            // avoid multiple enumerations... might give unexpected result?
+            CalendarEvent[] items = responses
+                .SelectMany(s => s.Items)
                 .Select(s => new CalendarEvent(s))
                 .ToArray();
 
             for (int i = 0; i < n; i++)
             {
-                // for each day, filter the results accordingly
+                // for each day, filter the results of all calendars accordingly
                 CalendarEvent[] events = items.Where(w => w.IsActiveAt(d)).ToArray();
                 CalendarDay item = new CalendarDay(d, events);
                 yield return item;
