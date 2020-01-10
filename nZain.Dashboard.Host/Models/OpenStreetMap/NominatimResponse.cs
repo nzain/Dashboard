@@ -1,36 +1,34 @@
-using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace nZain.Dashboard.Models.OpenStreetMap
 {
     public class NominatimResponse
     {
-        [JsonProperty("place_id")]
+        [JsonPropertyName("place_id")]
         public long PlaceId { get; set; }
 
-        [JsonProperty("licence")]
+        [JsonPropertyName("licence")]
         public string Licence { get; set; }
 
-        [JsonProperty("osm_type")]
+        [JsonPropertyName("osm_type")]
         public string OsmType { get; set; }
 
-        [JsonProperty("osm_id")]
+        [JsonPropertyName("osm_id")]
         public long OsmId { get; set; }
 
-        [JsonProperty("lat")]
+        [JsonPropertyName("lat")]
         public double Latitude { get; set; }
 
-        [JsonProperty("lon")]
+        [JsonPropertyName("lon")]
         public double Longitude { get; set; }
 
-        [JsonProperty("display_name")]
+        [JsonPropertyName("display_name")]
         public string DisplayName { get; set; }
 
-        [JsonProperty("address")]
+        [JsonPropertyName("address")]
         public NominatimAddress Address { get; set; }
 
-        [JsonProperty("boundingbox")]
+        [JsonPropertyName("boundingbox")]
         public double[] Boundingbox { get; set; }
 
         public override string ToString()

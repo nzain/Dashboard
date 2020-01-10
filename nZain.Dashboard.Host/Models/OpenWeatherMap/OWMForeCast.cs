@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace nZain.Dashboard.Models.OpenWeatherMap
 {
@@ -11,18 +11,18 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
     // documentation from https://openweathermap.org/forecast5
     public class OWMForeCast
     {
-        [JsonProperty("cod")]
-        public int Code { get; set; }
+        [JsonPropertyName("cod")]
+        public string Code { get; set; }
 
-        [JsonProperty("message")]
-        public string Message { get; set; }
+        [JsonPropertyName("message")]
+        public int Message { get; set; }
 
         /// <Summary></Summary>
-        [JsonProperty("list")]
+        [JsonPropertyName("list")]
         public ForeCastItem[] List { get; set; }
 
         /// <Summary></Summary>
-        [JsonProperty("city")]
+        [JsonPropertyName("city")]
         public City City { get; set; }
 
         
@@ -39,23 +39,23 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
     public class City
     {
         /// <Summary>City ID</Summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public long Id { get; set; }
 
         /// <Summary>City name</Summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <Summary>City geo location</Summary>
-        [JsonProperty("coord")]
+        [JsonPropertyName("coord")]
         public Coord Coord { get; set; }
 
         /// <Summary>Country code (GB, JP, etc)</Summary>
-        [JsonProperty("country")]
+        [JsonPropertyName("country")]
         public string Country { get; set; }
 
         /// <Summary></Summary>
-        [JsonProperty("population")]
+        [JsonPropertyName("population")]
         public long Population { get; set; }
 
         public override string ToString()
@@ -67,46 +67,46 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
     public class Coord
     {
         /// <Summary>City geo location, latitude</Summary>
-        [JsonProperty("lat")]
+        [JsonPropertyName("lat")]
         public double Latitude { get; set; }
 
         /// <Summary>City geo location, longitude</Summary>
-        [JsonProperty("lon")]
+        [JsonPropertyName("lon")]
         public double Longitude { get; set; }
     }
 
     public class ForeCastItem
     {
         /// <Summary>Time of data forecasted, unix, UTC</Summary>
-        [JsonProperty("dt")]
+        [JsonPropertyName("dt")]
         public long TimestampUnixUtc { get; set; }
 
         /// <Summary></Summary>
-        [JsonProperty("main")]
+        [JsonPropertyName("main")]
         public ForeCastDetails Details { get; set; }
 
         /// <Summary></Summary>
-        [JsonProperty("weather")]
+        [JsonPropertyName("weather")]
         public Weather[] Weather { get; set; }
 
         /// <Summary></Summary>
-        [JsonProperty("clouds")]
+        [JsonPropertyName("clouds")]
         public Clouds Clouds { get; set; }
 
         /// <Summary></Summary>
-        [JsonProperty("wind")]
+        [JsonPropertyName("wind")]
         public Wind Wind { get; set; }
 
         /// <Summary></Summary>
-        [JsonProperty("rain")]
+        [JsonPropertyName("rain")]
         public Rain Rain { get; set; }
 
         /// <Summary></Summary>
-        [JsonProperty("snow")]
+        [JsonPropertyName("snow")]
         public Snow Snow { get; set; }
 
         /// <Summary>Data/time of calculation, UTC</Summary>
-        [JsonProperty("dt_txt")]
+        [JsonPropertyName("dt_txt")]
         public DateTimeOffset DateTime { get; set; }
         
 
@@ -119,31 +119,31 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
     public class ForeCastDetails
     {
         /// <Summary>Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.</Summary>
-        [JsonProperty("temp")]
+        [JsonPropertyName("temp")]
         public double Temp { get; set; }
 
         /// <Summary>Minimum temperature at the moment of calculation. This is deviation from 'temp' that is possible for large cities and megalopolises geographically expanded (use these parameter optionally). Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.</Summary>
-        [JsonProperty("temp_min")]
+        [JsonPropertyName("temp_min")]
         public double TempMin { get; set; }
 
         /// <Summary>Maximum temperature at the moment of calculation. This is deviation from 'temp' that is possible for large cities and megalopolises geographically expanded (use these parameter optionally). Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.</Summary>
-        [JsonProperty("temp_max")]
+        [JsonPropertyName("temp_max")]
         public double TempMax { get; set; }
 
         /// <Summary>Atmospheric pressure on the sea level by default, hPa</Summary>
-        [JsonProperty("pressure")]
+        [JsonPropertyName("pressure")]
         public double Pressure { get; set; }
 
         /// <Summary>Atmospheric pressure on the sea level, hPa</Summary>
-        [JsonProperty("sea_level")]
+        [JsonPropertyName("sea_level")]
         public double SeaLevel { get; set; }
 
         /// <Summary>Atmospheric pressure on the ground level, hPa</Summary>
-        [JsonProperty("grnd_level")]
+        [JsonPropertyName("grnd_level")]
         public double GrndLevel { get; set; }
 
         /// <Summary>Humidity, %</Summary>
-        [JsonProperty("humidity")]
+        [JsonPropertyName("humidity")]
         public int Humidity { get; set; }
 
         public override string ToString()
@@ -155,19 +155,19 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
     public class Weather
     {
         /// <Summary>Weather condition id</Summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
         /// <Summary>Group of weather parameters (Rain, Snow, Extreme etc.)</Summary>
-        [JsonProperty("main")]
+        [JsonPropertyName("main")]
         public string Condition { get; set; }
 
         /// <Summary>Weather condition within the group</Summary>
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string Description { get; set; }
 
         /// <Summary>Weather icon id</Summary>
-        [JsonProperty("icon")]
+        [JsonPropertyName("icon")]
         public string Icon { get; set; }
 
         public string IconUri => $"http://openweathermap.org/img/w/{this.Icon}.png";
@@ -208,7 +208,7 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
     public class Clouds
     {
         /// <Summary>Cloudiness, %</Summary>
-        [JsonProperty("all")]
+        [JsonPropertyName("all")]
         public int CloudinessPercent { get; set; }
 
         public override string ToString()
@@ -220,11 +220,11 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
     public class Wind
     {
         /// <Summary>Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.</Summary>
-        [JsonProperty("speed")]
+        [JsonPropertyName("speed")]
         public double Speed { get; set; }
 
         /// <Summary>Wind direction, degrees (meteorological)</Summary>
-        [JsonProperty("deg")]
+        [JsonPropertyName("deg")]
         public double Deg { get; set; }
         
         public override string ToString()
@@ -236,7 +236,7 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
     public class Rain
     {
         /// <Summary>Rain volume for last 3 hours, mm</Summary>
-        [JsonProperty("3h", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("3h")]
         public double? Volume3H { get; set; }
 
         public override string ToString()
@@ -248,7 +248,7 @@ namespace nZain.Dashboard.Models.OpenWeatherMap
     public class Snow
     {
         /// <Summary>Snow volume for last 3 hours</Summary>
-        [JsonProperty("3h", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("3h")]
         public double? Volume3H { get; set; }
         
         public override string ToString()

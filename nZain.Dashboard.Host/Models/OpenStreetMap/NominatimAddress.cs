@@ -1,37 +1,37 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace nZain.Dashboard.Models.OpenStreetMap
 {
     public class NominatimAddress
     {
-        [JsonProperty("house_number")]
+        [JsonPropertyName("house_number")]
         public string HouseNumber { get; set; }
 
-        [JsonProperty("road")]
+        [JsonPropertyName("road")]
         public string Road { get; set; }
 
-        [JsonProperty("suburb")]
+        [JsonPropertyName("suburb")]
         public string Suburb { get; set; }
 
-        [JsonProperty("city")]
+        [JsonPropertyName("city")]
         public string City { get; set; }
 
-        [JsonProperty("county")]
+        [JsonPropertyName("county")]
         public string County { get; set; }
 
-        [JsonProperty("state_district")]
+        [JsonPropertyName("state_district")]
         public string StateDistrict { get; set; }
 
-        [JsonProperty("state")]
+        [JsonPropertyName("state")]
         public string State { get; set; }
 
-        [JsonProperty("postcode")]
+        [JsonPropertyName("postcode")]
         public int Postcode { get; set; }
 
-        [JsonProperty("country")]
+        [JsonPropertyName("country")]
         public string Country { get; set; }
 
-        [JsonProperty("country_code")]
+        [JsonPropertyName("country_code")]
         public string CountryCode { get; set; }
 
         public override string ToString()
