@@ -35,7 +35,7 @@ namespace nZain.Dashboard.Services
         // timestamp of last change
         private DateTimeOffset _lastChange;
 
-        public BackgroundImageService(ILogger<BackgroundImageService> logger, DashboardConfig cfg, IHostingEnvironment env, ReverseGeoCodingService geoCodingService)
+        public BackgroundImageService(ILogger<BackgroundImageService> logger, DashboardConfig cfg, IWebHostEnvironment env, ReverseGeoCodingService geoCodingService)
         {
             this._logger = logger;
             this._geoCodingService = geoCodingService ?? throw new ArgumentNullException();

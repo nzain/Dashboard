@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Google.Apis.Calendar.v3;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using NLog;
 using NLog.Web;
 using nZain.Dashboard.Services;
@@ -34,10 +34,23 @@ namespace nZain.Dashboard.Host
             {
 
                 // 1) read private config file (not on github)
-                using (var r = new StreamReader("Secrets/DashboardConfig.json"))
+                string secretsFilename = "Secrets/DashboardConfig.json";
+                if (File.Exists(secretsFilename))
                 {
-                    JsonSerializer serializer = new JsonSerializer();
-                    Config = (DashboardConfig)serializer.Deserialize(r, typeof(DashboardConfig));
+                    using (var r = File.OpenRead(secretsFilename))
+                    {
+                        Config = await JsonSerializer.DeserializeAsync<DashboardConfig>(r);
+                    }
+                }
+                else
+                {
+                    Config = new DashboardConfig();
+                    Directory.CreateDirectory("Secrets/");
+                    using (var w = File.Create(secretsFilename))
+                    {
+                        var options = new JsonSerializerOptions{WriteIndented = true};
+                        await JsonSerializer.SerializeAsync(w, Config, options);
+                    }
                 }
 #if DEBUG
                 // this UNC path doesn't work on raspbian!

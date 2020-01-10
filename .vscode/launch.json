@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // "console": "externalTerminal",
-            "program": "${workspaceFolder}/nZain.Dashboard.Host/bin/Debug/netcoreapp2.1/nZain.Dashboard.Host.dll",
+            "program": "${workspaceFolder}/nZain.Dashboard.Host/bin/Debug/netcoreapp3.0/nZain.Dashboard.Host.dll",
             "args": [],
             "cwd": "${workspaceFolder}/nZain.Dashboard.Host",
             "stopAtEntry": false,
