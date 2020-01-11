@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,11 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using nZain.Dashboard.Host;
 using nZain.Dashboard.Models;
-using nZain.Dashboard.Models.OpenStreetMap;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.MetaData;
-using SixLabors.ImageSharp.MetaData.Profiles.Exif;
-using SixLabors.ImageSharp.Primitives;
+using MetadataExtractor;
+using MetadataExtractor.Formats.Exif;
+using MetadataExtractor.Formats.Jpeg;
 
 namespace nZain.Dashboard.Services
 {
@@ -40,7 +37,7 @@ namespace nZain.Dashboard.Services
             this._logger = logger;
             this._geoCodingService = geoCodingService ?? throw new ArgumentNullException();
             this._imagesSourcePath = cfg?.BackgroundImagesPath ?? throw new InvalidDataException("DashboardConfig.BackgroundImagesPath is not set");
-            if (!Directory.Exists(this._imagesSourcePath))
+            if (!System.IO.Directory.Exists(this._imagesSourcePath))
             {
                 throw new DirectoryNotFoundException(this._imagesSourcePath);
             }
@@ -69,7 +66,7 @@ namespace nZain.Dashboard.Services
                 this._lastImage = await this.CopyNextBackgroundToLocalCacheAsync();
             }
 
-            GeoLocation location = this._lastImage?.Location;
+            Models.OpenStreetMap.GeoLocation location = this._lastImage?.Location;
             if (location != null && this._lastImage.LocationDisplayString == null)
             {
                 this._lastImage.LocationDisplayString = 
@@ -129,8 +126,6 @@ namespace nZain.Dashboard.Services
                 }
             }
             this._logger.LogInformation(" {0,2}/{1,3} images selected! Create randomized queue...", images.Count, count);
-            // free memory, we use this service once per month ideally
-            Configuration.Default.MemoryAllocator.ReleaseRetainedResources();
 
             // randomize the list and fill queue
             foreach (BackgroundImage item in FisherYatesShuffled(images))
@@ -164,83 +159,48 @@ namespace nZain.Dashboard.Services
             {
                 return false;
             }
-            using (var inputStream = file.OpenRead())
+
+            IReadOnlyList<MetadataExtractor.Directory> directories = JpegMetadataReader.ReadMetadata(file.FullName);
+            int width = 0;
+            int height = 0;
+            DateTimeOffset timestamp = default;
+            string make = string.Empty;
+            string model = string.Empty;
+            foreach (var dir in directories)
             {
-                // using ImageSharp to read EXIF data
-                IImageInfo imageInfo = Image.Identify(inputStream);
-                ExifProfile exif = imageInfo.MetaData?.ExifProfile;
-                if (exif == null)
+                if (timestamp == default(DateTimeOffset) &&
+                    dir.TryGetDateTime(ExifDirectoryBase.TagDateTimeOriginal, out DateTime dateTime))
                 {
-                    return false;
+                    timestamp = new DateTimeOffset(dateTime);
                 }
-                if (!exif.TryGetValue(ExifTag.DateTimeOriginal, out ExifValue dateTimeOriginal) ||
-                    !(dateTimeOriginal.Value is string timestampStr))
+                if (width <= 0 && dir.ContainsTag(ExifDirectoryBase.TagExifImageWidth))
                 {
-                    return false;
+                    dir.TryGetInt32(ExifDirectoryBase.TagExifImageWidth, out width);
                 }
-                // timestampStr (ASCII): "2008:07:12 13:58:43"
-                if (!DateTimeOffset.TryParseExact(timestampStr, "yyyy':'MM':'dd HH':'mm':'ss",
-                    CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out DateTimeOffset timestamp))
+                if (height <= 0 && dir.ContainsTag(ExifDirectoryBase.TagExifImageHeight))
                 {
-                    return false;
+                    dir.TryGetInt32(ExifDirectoryBase.TagExifImageHeight, out height);
                 }
-
-                string model = null;
-                if (exif.TryGetValue(ExifTag.Model, out ExifValue modelValue))
+                if (make.Length == 0 && dir.ContainsTag(ExifDirectoryBase.TagMake))
                 {
-                    // Ascii 'Canon EOS 760D' or 'S7  ' or 'Nexus S'
-                    model = modelValue.Value.ToString();
+                    make = dir.GetString(ExifDirectoryBase.TagMake);
                 }
-
-                GeoLocation location = null;
-                if (TryGetGpsLocation(exif, out double lat, out double lon))
+                if (string.IsNullOrEmpty(model) && dir.ContainsTag(ExifDirectoryBase.TagModel))
                 {
-                    location = new GeoLocation(lat, lon);
+                    model = dir.GetString(ExifDirectoryBase.TagModel);
                 }
-
-                bgImg = new BackgroundImage(file.FullName, imageInfo.Width, imageInfo.Height,
-                    timestamp, model, location);
             }
+            string camName = $"{make ?? string.Empty} {model ?? string.Empty}";
 
-            return bgImg != null;
-        }
-
-        private static bool TryGetGpsLocation(ExifProfile exif, out double lat, out double lon)
-        {
-            if (!exif.TryGetValue(ExifTag.GPSLatitude, out ExifValue latValue) ||
-                !exif.TryGetValue(ExifTag.GPSLongitude, out ExifValue lonValue) ||
-                !exif.TryGetValue(ExifTag.GPSLatitudeRef, out ExifValue latRef) ||
-                !exif.TryGetValue(ExifTag.GPSLongitudeRef, out ExifValue lonRef) ||
-                !(latValue.Value is SignedRational[] latArr) ||
-                !(lonValue.Value is SignedRational[] lonArr))
-            {
-                lat = double.NaN;
-                lon = double.NaN;
-                return false;
-            }
-            lat = DmsToDegree(latArr);
-            lon = DmsToDegree(lonArr);
-            if (string.Equals(latRef.Value.ToString(), "s", StringComparison.OrdinalIgnoreCase))
-            {
-                lat = -lat; // south
-            }
-            if (string.Equals(lonRef.Value.ToString(), "w", StringComparison.OrdinalIgnoreCase))
-            {
-                lon = -lon; // west
-            }
+            // gps location may be null
+            var gpsLocation = directories
+                .OfType<GpsDirectory>()
+                .Select(s => s.GetGeoLocation())
+                .Where(w => w != null)
+                .Select(s => new Models.OpenStreetMap.GeoLocation(s.Latitude, s.Longitude))
+                .FirstOrDefault();
+            bgImg = new BackgroundImage(file.FullName, width, height, timestamp, camName, gpsLocation);
             return true;
-        }
-
-        private static double DmsToDegree(SignedRational[] values)
-        {
-            double degree = 0.0;
-            double factor = 1;
-            foreach (SignedRational value in values)
-            {
-                degree += factor * value.Numerator / value.Denominator;
-                factor /= 60;
-            }
-            return degree;
         }
 
         /// <Summary>Implementation of the Fisher-Yates shuffle.</Summary>

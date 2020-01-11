@@ -10,14 +10,14 @@ namespace nZain.Dashboard.Models.OpenStreetMap
         [JsonPropertyName("road")]
         public string Road { get; set; }
 
-        [JsonPropertyName("suburb")]
-        public string Suburb { get; set; }
+        // [JsonPropertyName("suburb")]
+        // public string Suburb { get; set; }
 
         [JsonPropertyName("city")]
         public string City { get; set; }
 
-        [JsonPropertyName("county")]
-        public string County { get; set; }
+        // [JsonPropertyName("county")]
+        // public string County { get; set; }
 
         [JsonPropertyName("state_district")]
         public string StateDistrict { get; set; }
@@ -25,14 +25,14 @@ namespace nZain.Dashboard.Models.OpenStreetMap
         [JsonPropertyName("state")]
         public string State { get; set; }
 
-        [JsonPropertyName("postcode")]
-        public int Postcode { get; set; }
+        // [JsonPropertyName("postcode")]
+        // public int Postcode { get; set; }
 
         [JsonPropertyName("country")]
         public string Country { get; set; }
 
-        [JsonPropertyName("country_code")]
-        public string CountryCode { get; set; }
+        // [JsonPropertyName("country_code")]
+        // public string CountryCode { get; set; }
 
         public override string ToString()
         {

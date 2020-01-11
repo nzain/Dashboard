@@ -7,10 +7,10 @@
 
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.435" />
+    <PackageReference Include="MetadataExtractor" Version="2.2.0" />
     <PackageReference Include="nlog" Version="4.6.8" />
     <PackageReference Include="nlog.web.aspnetcore" Version="4.9.0" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.43.0.1809" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" />
     <PackageReference Include="System.Device.Gpio" Version="1.0.0" />
   </ItemGroup>
 
