@@ -78,22 +78,23 @@ namespace nZain.Dashboard.Services
 
         private async Task<BackgroundImage> CopyNextBackgroundToLocalCacheAsync()
         {
-            if (this._nextBackgrounds.TryDequeue(out BackgroundImage srcImg))
+            if (!this._nextBackgrounds.TryDequeue(out BackgroundImage srcImg))
             {
-                string src = srcImg.OriginalSourceFile;
-                string dst = this._localCopyFullPath;
-                const int bufSize = 4096;
-                const FileOptions opt = FileOptions.Asynchronous | FileOptions.SequentialScan;
-                using (var sourceStream = new FileStream(src, FileMode.Open, FileAccess.Read, FileShare.Read, bufSize, opt))
-                using (var destinationStream = new FileStream(dst, FileMode.Create, FileAccess.Write, FileShare.None, bufSize, opt))
-                {
-                    await sourceStream.CopyToAsync(destinationStream);
-                    await destinationStream.FlushAsync();
-                }
-                srcImg.RelativeWebRootLocation = this._relativePath;
-                return srcImg;
+                return null; // failed, queue empty for some reason
             }
-            return null; // failed, queue empty for some reason
+            string src = srcImg.OriginalSourceFile;
+            string dst = this._localCopyFullPath;
+            this._logger.LogInformation($"copy '{src}' ({srcImg.Width}x{srcImg.Height}) to '{dst}'");
+            const int bufSize = 4096;
+            const FileOptions opt = FileOptions.Asynchronous | FileOptions.SequentialScan;
+            using (var sourceStream = new FileStream(src, FileMode.Open, FileAccess.Read, FileShare.Read, bufSize, opt))
+            using (var destinationStream = new FileStream(dst, FileMode.Create, FileAccess.Write, FileShare.None, bufSize, opt))
+            {
+                await sourceStream.CopyToAsync(destinationStream);
+                await destinationStream.FlushAsync();
+            }
+            srcImg.RelativeWebRootLocation = this._relativePath;
+            return srcImg;
         }
 
         private void FillBackgroundsQueue()
@@ -168,18 +169,34 @@ namespace nZain.Dashboard.Services
             string model = string.Empty;
             foreach (var dir in directories)
             {
-                if (timestamp == default(DateTimeOffset) &&
-                    dir.TryGetDateTime(ExifDirectoryBase.TagDateTimeOriginal, out DateTime dateTime))
+                if (timestamp == default(DateTimeOffset))
                 {
+                    if (dir.TryGetDateTime(ExifDirectoryBase.TagDateTime, out DateTime dateTime) ||
+                        dir.TryGetDateTime(ExifDirectoryBase.TagDateTimeOriginal, out dateTime) ||
+                        dir.TryGetDateTime(ExifDirectoryBase.TagDateTimeDigitized, out dateTime))
                     timestamp = new DateTimeOffset(dateTime);
                 }
-                if (width <= 0 && dir.ContainsTag(ExifDirectoryBase.TagExifImageWidth))
+                if (width <= 0)
                 {
-                    dir.TryGetInt32(ExifDirectoryBase.TagExifImageWidth, out width);
+                    if (dir.ContainsTag(ExifDirectoryBase.TagExifImageWidth))
+                    {
+                        dir.TryGetInt32(ExifDirectoryBase.TagExifImageWidth, out width);
+                    }
+                    else if (dir.ContainsTag(ExifDirectoryBase.TagImageWidth))
+                    {
+                        dir.TryGetInt32(ExifDirectoryBase.TagImageWidth, out width);
+                    }
                 }
-                if (height <= 0 && dir.ContainsTag(ExifDirectoryBase.TagExifImageHeight))
+                if (height <= 0)
                 {
-                    dir.TryGetInt32(ExifDirectoryBase.TagExifImageHeight, out height);
+                    if (dir.ContainsTag(ExifDirectoryBase.TagExifImageHeight))
+                    {
+                        dir.TryGetInt32(ExifDirectoryBase.TagExifImageHeight, out height);
+                    }
+                    else if (dir.ContainsTag(ExifDirectoryBase.TagImageHeight))
+                    {
+                        dir.TryGetInt32(ExifDirectoryBase.TagImageHeight, out height);
+                    }
                 }
                 if (make.Length == 0 && dir.ContainsTag(ExifDirectoryBase.TagMake))
                 {
