@@ -171,10 +171,10 @@ namespace nZain.Dashboard.Services
             {
                 if (timestamp == default(DateTimeOffset))
                 {
-                    if (dir.TryGetDateTime(ExifDirectoryBase.TagDateTime, out DateTime dateTime) ||
-                        dir.TryGetDateTime(ExifDirectoryBase.TagDateTimeOriginal, out dateTime) ||
-                        dir.TryGetDateTime(ExifDirectoryBase.TagDateTimeDigitized, out dateTime))
-                    timestamp = new DateTimeOffset(dateTime);
+                    if (dir.TryGetDateTime(ExifDirectoryBase.TagDateTimeOriginal, out var dateTime))
+                    {
+                        timestamp = new DateTimeOffset(dateTime);
+                    }
                 }
                 if (width <= 0)
                 {
