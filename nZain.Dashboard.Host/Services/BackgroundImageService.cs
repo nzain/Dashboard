@@ -110,10 +110,15 @@ namespace nZain.Dashboard.Services
             int month = now.Month;
             List<BackgroundImage> images = new List<BackgroundImage>(30);
             int count = 0;
-            foreach (var item in dir.EnumerateFiles("*", SearchOption.AllDirectories))
+            foreach (var item in dir.EnumerateFiles("*", SearchOption.AllDirectories)
+                // ignore windows thumbs
+                .Where(w => !w.Name.Equals("Thumbs.db", StringComparison.OrdinalIgnoreCase))
+                // ignore Synology Photo Station thumbs
+                .Where(w => !w.FullName.Contains("@eadir", StringComparison.OrdinalIgnoreCase)))
             {
-                if (!TryLoad(item, out BackgroundImage bgImg))
+                if (!this.TryLoad(item, out BackgroundImage bgImg))
                 {
+                    this._logger.LogWarning($"Ignore {item.Name}");
                     continue; // not a jpg or failed to read exif
                 }
                 if (bgImg.Timestamp.Month == month)
@@ -148,7 +153,7 @@ namespace nZain.Dashboard.Services
             }
         }
 
-        public static bool TryLoad(FileInfo file, out BackgroundImage bgImg)
+        public bool TryLoad(FileInfo file, out BackgroundImage bgImg)
         {
             bgImg = null;
             if (file == null || !file.Exists)
@@ -208,6 +213,19 @@ namespace nZain.Dashboard.Services
                 }
             }
             string camName = $"{make ?? string.Empty} {model ?? string.Empty}";
+
+            if (timestamp.Year < 1990)
+            {
+                this._logger.LogWarning($"\n{file.Name}: timestamp missing: {timestamp}");
+            }
+            if (height <= 0 || width <= 0)
+            {
+                this._logger.LogWarning($"\n{file.Name}: width/height missing: {width}x{height}");
+            }
+            if (string.IsNullOrWhiteSpace(camName))
+            {
+                this._logger.LogWarning($"{file.Name}: no model/make");
+            }
 
             // gps location may be null
             var gpsLocation = directories
