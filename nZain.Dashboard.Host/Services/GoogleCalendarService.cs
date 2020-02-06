@@ -128,6 +128,7 @@ namespace nZain.Dashboard.Services
             CalendarEvent[] items = responses
                 .SelectMany(s => s.Items)
                 .Select(s => new CalendarEvent(s))
+                .OrderBy(o => o.StartTime)
                 .ToArray();
 
             for (int i = 0; i < n; i++)
