@@ -143,14 +143,29 @@ namespace nZain.Dashboard.Services
                     break;
                 }
             }
-            if (this._nextBackgrounds.Count == 0)
+            int uniqueImages = this._nextBackgrounds.Count;
+            if (uniqueImages == 0)
             {
                 this._logger.LogError($"No images for month '{month}' in '{this._imagesSourcePath}'");
+                return;
             }
-            else
+            // if we have less images than days in the month, repeat the queue (don't show same images twice in a row)
+            while (now.Month == month)
             {
-                this._logger.LogInformation("Queue of {0} background images ready.", this._nextBackgrounds.Count);
+                BackgroundImage[] copy = this._nextBackgrounds.Take(uniqueImages).ToArray();
+                foreach (BackgroundImage img in copy)
+                {
+                    this._logger.LogInformation("Duplicating {0} unique images...", uniqueImages);
+                    this._nextBackgrounds.Enqueue(img);
+                    now = now.AddDays(1);
+                    if (now.Month != month)
+                    {
+                        break;
+                    }
+                }
             }
+            this._logger.LogInformation("Queue of {0} background images ({1} unique) ready.",
+                this._nextBackgrounds.Count, uniqueImages);
         }
 
         public bool TryLoad(FileInfo file, out BackgroundImage bgImg)
