@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using Google.Apis.Calendar.v3.Data;
@@ -9,6 +10,12 @@ namespace nZain.Dashboard.Models
 {
     public class CalendarEvent
     {
+        private static readonly IReadOnlyDictionary<string, string> Prefixes = new Dictionary<string, string>
+        {
+            // ICalUID                                                                 Prefix
+            { "cos68chpcgsj6bb1c8qj2b9kcph64b9p6kr6ab9lccoj0eb26cqj6d1l6g@google.com", "S: " }
+        }.ToImmutableDictionary();
+        
         public CalendarEvent(Event ev)
         {
             this.StartTime = Convert(ev.Start, out bool allDay);
@@ -17,7 +24,14 @@ namespace nZain.Dashboard.Models
                 : Convert(ev.End, out _);
             this.IsAllDay = allDay;
             this.IsMultiDay = this.StartTime.Day != this.EndTime.Day;
-            this.Summary = ev.Summary;
+            if (Prefixes.TryGetValue(ev.ICalUID, out string prefix) && !ev.Summary.StartsWith(prefix))
+            {
+                this.Summary = prefix + ev.Summary;
+            }
+            else
+            {
+                this.Summary = ev.Summary;
+            }
             this.Location = ev.Location;
             this.DisplayTime = allDay? null : this.StartTime.ToString("HH:mm");
         }

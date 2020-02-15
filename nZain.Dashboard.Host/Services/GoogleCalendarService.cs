@@ -93,9 +93,6 @@ namespace nZain.Dashboard.Services
             DateTimeOffset d = DateTimeOffset.Now;
             d = new DateTimeOffset(d.Year, d.Month, d.Day, 0, 0, 0, d.Offset);
 
-            // TODO create days first, properly set start/end
-            // TODO then populate with events from each calendar response
-
             List<Events> responses = new List<Events>();
             foreach (string calendarId in this._calendarIds)
             {
